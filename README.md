@@ -29,6 +29,7 @@ Other disassembly projects:
 - [**Pokémon Fire Red**][pokefirered]
 - [**Pokémon Emerald**][pokeemerald]
 
+[origina crystal pret]: https://github.com/pret/pokecrystal
 [pokered]: https://github.com/pret/pokered
 [pokeyellow]: https://github.com/pret/pokeyellow
 [pokegold]: https://github.com/pret/pokegold
