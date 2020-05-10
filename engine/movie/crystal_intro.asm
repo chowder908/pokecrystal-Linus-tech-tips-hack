@@ -158,8 +158,8 @@ PlaceGameFreakPresents_1:
 	ret
 
 .GAME_FREAK:
-	;  G  A  M  E   _  F  R  E  A  K
-	db 0, 1, 2, 3, 13, 4, 5, 3, 1, 6
+	;  T  E  C  H   _  _  T  I  P  S
+	db 3, 0, 1, 2, 13, 13,3, 5, 6, 4
 .end
 	db "@"
 
