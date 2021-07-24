@@ -16,60 +16,53 @@ PlayRadioShow:
 	ld [wCurRadioLine], a
 .ok
 ; Jump to the currently loaded station.  The index to which we need to jump is in wCurRadioLine.
-	ld a, [wCurRadioLine]
-	ld e, a
-	ld d, 0
-	ld hl, RadioJumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable RadioJumptable, wCurRadioLine
 
 RadioJumptable:
 ; entries correspond to constants/radio_constants.asm
-	dw OaksPKMNTalk1  ; $00
-	dw PokedexShow1 ; $01
-	dw BenMonMusic1  ; $02
-	dw LuckyNumberShow1 ; $03
-	dw BuenasPassword1 ; $04
-	dw PeoplePlaces1 ; $05
-	dw FernMonMusic1 ; $06
-	dw RocketRadio1 ; $07
-	dw PokeFluteRadio ; $08
-	dw UnownRadio ; $09
-	dw EvolutionRadio ; $0a
+	table_width 2, RadioJumptable
+	dw OaksPKMNTalk1     ; $00
+	dw PokedexShow1      ; $01
+	dw BenMonMusic1      ; $02
+	dw LuckyNumberShow1  ; $03
+	dw BuenasPassword1   ; $04
+	dw PeoplePlaces1     ; $05
+	dw FernMonMusic1     ; $06
+	dw RocketRadio1      ; $07
+	dw PokeFluteRadio    ; $08
+	dw UnownRadio        ; $09
+	dw EvolutionRadio    ; $0a
+	assert_table_length NUM_RADIO_CHANNELS
 ; OaksPKMNTalk
-	dw OaksPKMNTalk2  ; $0b
-	dw OaksPKMNTalk3  ; $0c
-	dw OaksPKMNTalk4  ; $0d
-	dw OaksPKMNTalk5  ; $0e
-	dw OaksPKMNTalk6  ; $0f
-	dw OaksPKMNTalk7  ; $10
-	dw OaksPKMNTalk8  ; $11
-	dw OaksPKMNTalk9  ; $12
-	dw PokedexShow2 ; $13
-	dw PokedexShow3 ; $14
-	dw PokedexShow4 ; $15
-	dw PokedexShow5 ; $16
+	dw OaksPKMNTalk2     ; $0b
+	dw OaksPKMNTalk3     ; $0c
+	dw OaksPKMNTalk4     ; $0d
+	dw OaksPKMNTalk5     ; $0e
+	dw OaksPKMNTalk6     ; $0f
+	dw OaksPKMNTalk7     ; $10
+	dw OaksPKMNTalk8     ; $11
+	dw OaksPKMNTalk9     ; $12
+	dw PokedexShow2      ; $13
+	dw PokedexShow3      ; $14
+	dw PokedexShow4      ; $15
+	dw PokedexShow5      ; $16
 ; Ben Music
-	dw BenMonMusic2  ; $17
-	dw BenMonMusic3  ; $18
-	dw BenFernMusic4 ; $19
-	dw BenFernMusic5 ; $1a
-	dw BenFernMusic6 ; $1b
-	dw BenFernMusic7 ; $1c
-	dw FernMonMusic2 ; $1d
+	dw BenMonMusic2      ; $17
+	dw BenMonMusic3      ; $18
+	dw BenFernMusic4     ; $19
+	dw BenFernMusic5     ; $1a
+	dw BenFernMusic6     ; $1b
+	dw BenFernMusic7     ; $1c
+	dw FernMonMusic2     ; $1d
 ; Lucky Number Show
-	dw LuckyNumberShow2 ; $1e
-	dw LuckyNumberShow3 ; $1f
-	dw LuckyNumberShow4 ; $20
-	dw LuckyNumberShow5 ; $21
-	dw LuckyNumberShow6 ; $22
-	dw LuckyNumberShow7 ; $23
-	dw LuckyNumberShow8 ; $24
-	dw LuckyNumberShow9 ; $25
+	dw LuckyNumberShow2  ; $1e
+	dw LuckyNumberShow3  ; $1f
+	dw LuckyNumberShow4  ; $20
+	dw LuckyNumberShow5  ; $21
+	dw LuckyNumberShow6  ; $22
+	dw LuckyNumberShow7  ; $23
+	dw LuckyNumberShow8  ; $24
+	dw LuckyNumberShow9  ; $25
 	dw LuckyNumberShow10 ; $26
 	dw LuckyNumberShow11 ; $27
 	dw LuckyNumberShow12 ; $28
@@ -77,54 +70,55 @@ RadioJumptable:
 	dw LuckyNumberShow14 ; $2a
 	dw LuckyNumberShow15 ; $2b
 ; People & Places
-	dw PeoplePlaces2 ; $2c
-	dw PeoplePlaces3 ; $2d
-	dw PeoplePlaces4 ; $2e
-	dw PeoplePlaces5 ; $2f
-	dw PeoplePlaces6 ; $30
-	dw PeoplePlaces7 ; $31
+	dw PeoplePlaces2     ; $2c
+	dw PeoplePlaces3     ; $2d
+	dw PeoplePlaces4     ; $2e
+	dw PeoplePlaces5     ; $2f
+	dw PeoplePlaces6     ; $30
+	dw PeoplePlaces7     ; $31
 ; Rocket Radio
-	dw RocketRadio2 ; $32
-	dw RocketRadio3 ; $33
-	dw RocketRadio4 ; $34
-	dw RocketRadio5 ; $35
-	dw RocketRadio6 ; $36
-	dw RocketRadio7 ; $37
-	dw RocketRadio8 ; $38
-	dw RocketRadio9 ; $39
-	dw RocketRadio10 ; $3a
+	dw RocketRadio2      ; $32
+	dw RocketRadio3      ; $33
+	dw RocketRadio4      ; $34
+	dw RocketRadio5      ; $35
+	dw RocketRadio6      ; $36
+	dw RocketRadio7      ; $37
+	dw RocketRadio8      ; $38
+	dw RocketRadio9      ; $39
+	dw RocketRadio10     ; $3a
 ; More Pokemon Channel stuff
-	dw OaksPKMNTalk10 ; $3b
-	dw OaksPKMNTalk11 ; $3c
-	dw OaksPKMNTalk12 ; $3d
-	dw OaksPKMNTalk13 ; $3e
-	dw OaksPKMNTalk14 ; $3f
+	dw OaksPKMNTalk10    ; $3b
+	dw OaksPKMNTalk11    ; $3c
+	dw OaksPKMNTalk12    ; $3d
+	dw OaksPKMNTalk13    ; $3e
+	dw OaksPKMNTalk14    ; $3f
 ; Buenas Password
-	dw BuenasPassword2 ; $40
-	dw BuenasPassword3 ; $41
-	dw BuenasPassword4 ; $42
-	dw BuenasPassword5 ; $43
-	dw BuenasPassword6 ; $44
-	dw BuenasPassword7 ; $45
-	dw BuenasPassword8 ; $46
-	dw BuenasPassword9 ; $47
-	dw BuenasPassword10 ; $48
-	dw BuenasPassword11 ; $49
-	dw BuenasPassword12 ; $4a
-	dw BuenasPassword13 ; $4b
-	dw BuenasPassword14 ; $4c
-	dw BuenasPassword15 ; $4d
-	dw BuenasPassword16 ; $4e
-	dw BuenasPassword17 ; $4f
-	dw BuenasPassword18 ; $50
-	dw BuenasPassword19 ; $51
-	dw BuenasPassword20 ; $52
-	dw BuenasPassword21 ; $53
-	dw RadioScroll ; $54
+	dw BuenasPassword2   ; $40
+	dw BuenasPassword3   ; $41
+	dw BuenasPassword4   ; $42
+	dw BuenasPassword5   ; $43
+	dw BuenasPassword6   ; $44
+	dw BuenasPassword7   ; $45
+	dw BuenasPassword8   ; $46
+	dw BuenasPassword9   ; $47
+	dw BuenasPassword10  ; $48
+	dw BuenasPassword11  ; $49
+	dw BuenasPassword12  ; $4a
+	dw BuenasPassword13  ; $4b
+	dw BuenasPassword14  ; $4c
+	dw BuenasPassword15  ; $4d
+	dw BuenasPassword16  ; $4e
+	dw BuenasPassword17  ; $4f
+	dw BuenasPassword18  ; $50
+	dw BuenasPassword19  ; $51
+	dw BuenasPassword20  ; $52
+	dw BuenasPassword21  ; $53
+	dw RadioScroll       ; $54
 ; More Pokemon Channel stuff
-	dw PokedexShow6 ; $55
-	dw PokedexShow7 ; $56
-	dw PokedexShow8 ; $57
+	dw PokedexShow6      ; $55
+	dw PokedexShow7      ; $56
+	dw PokedexShow8      ; $57
+	assert_table_length NUM_RADIO_SEGMENTS
 
 PrintRadioLine:
 	ld [wNextRadioLine], a
@@ -150,7 +144,7 @@ PrintRadioLine:
 	ld [wRadioTextDelay], a
 	ret
 
-ReplacePeriodsWithSpaces:
+ReplacePeriodsWithSpaces: ; unreferenced
 	push hl
 	ld b, SCREEN_WIDTH * 2
 .loop
@@ -158,7 +152,6 @@ ReplacePeriodsWithSpaces:
 	cp "."
 	jr nz, .next
 	ld [hl], " "
-
 .next
 	inc hl
 	dec b
@@ -206,7 +199,6 @@ OaksPKMNTalk4:
 	and %11111
 	cp (OaksPKMNTalkRoutes.End - OaksPKMNTalkRoutes) / 2
 	jr nc, .sample
-	; We now have a number between 0 and 14.
 	ld hl, OaksPKMNTalkRoutes
 	ld c, a
 	ld b, 0
@@ -255,7 +247,7 @@ endr
 .loop3
 	; Choose one of the middle three Pokemon.
 	call Random
-	and NUM_GRASSMON
+	maskbits NUM_GRASSMON
 	cp 2
 	jr c, .loop3
 	cp 5
@@ -267,7 +259,7 @@ endr
 	inc hl ; skip level
 	ld a, BANK(JohtoGrassWildMons)
 	call GetFarByte
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	ld [wCurPartySpecies], a
 	call GetPokemonName
 	ld hl, wStringBuffer1
@@ -329,7 +321,7 @@ OPT_OakText3:
 
 OaksPKMNTalk7:
 	ld a, [wCurPartySpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, OPT_MaryText1
 	ld a, OAKS_POKEMON_TALK_8
@@ -344,6 +336,7 @@ OaksPKMNTalk8:
 	; so no need for a retry loop
 	call Random
 	maskbits NUM_OAKS_POKEMON_TALK_ADVERBS
+	assert_power_of_2 NUM_OAKS_POKEMON_TALK_ADVERBS
 	ld e, a
 	ld d, 0
 	ld hl, .Adverbs
@@ -356,7 +349,7 @@ OaksPKMNTalk8:
 	jp NextRadioLine
 
 .Adverbs:
-; there are NUM_OAKS_POKEMON_TALK_ADVERBS entries
+	table_width 2, OaksPKMNTalk8.Adverbs
 	dw .OPT_SweetAdorablyText
 	dw .OPT_WigglySlicklyText
 	dw .OPT_AptlyNamedText
@@ -373,6 +366,7 @@ OaksPKMNTalk8:
 	dw .OPT_ProvocativelyText
 	dw .OPT_FlippedOutText
 	dw .OPT_HeartMeltinglyText
+	assert_table_length NUM_OAKS_POKEMON_TALK_ADVERBS
 
 .OPT_SweetAdorablyText:
 	text_far _OPT_SweetAdorablyText
@@ -443,6 +437,7 @@ OaksPKMNTalk9:
 	; so no need for a retry loop
 	call Random
 	maskbits NUM_OAKS_POKEMON_TALK_ADJECTIVES
+	assert_power_of_2 NUM_OAKS_POKEMON_TALK_ADJECTIVES
 	ld e, a
 	ld d, 0
 	ld hl, .Adjectives
@@ -463,7 +458,7 @@ OaksPKMNTalk9:
 	jp NextRadioLine
 
 .Adjectives:
-; there are NUM_OAKS_POKEMON_TALK_ADJECTIVES entries
+	table_width 2, OaksPKMNTalk9.Adjectives
 	dw .OPT_CuteText
 	dw .OPT_WeirdText
 	dw .OPT_PleasantText
@@ -480,6 +475,7 @@ OaksPKMNTalk9:
 	dw .OPT_GuardedText
 	dw .OPT_LovelyText
 	dw .OPT_SpeedyText
+	assert_table_length NUM_OAKS_POKEMON_TALK_ADJECTIVES
 
 .OPT_CuteText:
 	text_far _OPT_CuteText
@@ -682,7 +678,7 @@ PokedexShow1:
 	inc c
 	ld a, c
 	ld [wCurPartySpecies], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, PokedexShowText
 	ld a, POKEDEX_SHOW_2
@@ -697,7 +693,7 @@ PokedexShow2:
 	add hl, bc
 	add hl, bc
 	ld a, BANK(PokedexDataPointerTable)
-	call GetFarHalfword
+	call GetFarWord
 	call PokedexShow_GetDexEntryBank
 	push af
 	push hl
@@ -1098,7 +1094,7 @@ PeoplePlaces4: ; People
 	call Random
 	maskbits NUM_TRAINER_CLASSES
 	inc a
-	cp NUM_TRAINER_CLASSES - 1
+	cp NUM_TRAINER_CLASSES ; exclude MYSTICALMAN
 	jr nc, PeoplePlaces4
 	push af
 	ld hl, PnP_HiddenPeople
@@ -1140,6 +1136,7 @@ PeoplePlaces5:
 	; so no need for a retry loop
 	call Random
 	maskbits NUM_PNP_PEOPLE_ADJECTIVES
+	assert_power_of_2 NUM_PNP_PEOPLE_ADJECTIVES
 	ld e, a
 	ld d, 0
 	ld hl, .Adjectives
@@ -1161,7 +1158,7 @@ PeoplePlaces5:
 	jp NextRadioLine
 
 .Adjectives:
-; there are NUM_PNP_PEOPLE_ADJECTIVES entries
+	table_width 2, PeoplePlaces5.Adjectives
 	dw PnP_CuteText
 	dw PnP_LazyText
 	dw PnP_HappyText
@@ -1178,6 +1175,7 @@ PeoplePlaces5:
 	dw PnP_WeirdText
 	dw PnP_RightForMeText
 	dw PnP_OddText
+	assert_table_length NUM_PNP_PEOPLE_ADJECTIVES
 
 PnP_CuteText:
 	text_far _PnP_CuteText
@@ -1273,6 +1271,7 @@ PeoplePlaces7:
 	; so no need for a retry loop
 	call Random
 	maskbits NUM_PNP_PLACES_ADJECTIVES
+	assert_power_of_2 NUM_PNP_PLACES_ADJECTIVES
 	ld e, a
 	ld d, 0
 	ld hl, .Adjectives
@@ -1295,7 +1294,7 @@ PeoplePlaces7:
 	jp PrintRadioLine
 
 .Adjectives:
-; there are NUM_PNP_PLACES_ADJECTIVES entries
+	table_width 2, PeoplePlaces7.Adjectives
 	dw PnP_CuteText
 	dw PnP_LazyText
 	dw PnP_HappyText
@@ -1312,6 +1311,7 @@ PeoplePlaces7:
 	dw PnP_WeirdText
 	dw PnP_RightForMeText
 	dw PnP_OddText
+	assert_table_length NUM_PNP_PLACES_ADJECTIVES
 
 RocketRadio1:
 	call StartRadioStation
@@ -1518,7 +1518,7 @@ GetBuenasPassword:
 	and $f
 	ld c, a
 	push hl
-	ld hl, .StringFunctionJumpTable
+	ld hl, .StringFunctionJumptable
 	ld e, b
 	add hl, de
 	add hl, de
@@ -1531,12 +1531,14 @@ GetBuenasPassword:
 	ld c, [hl]
 	ret
 
-.StringFunctionJumpTable:
+.StringFunctionJumptable:
 ; entries correspond to BUENA_* constants
+	table_width 2, GetBuenasPassword.StringFunctionJumptable
 	dw .Mon       ; BUENA_MON
 	dw .Item      ; BUENA_ITEM
 	dw .Move      ; BUENA_MOVE
 	dw .RawString ; BUENA_STRING
+	assert_table_length NUM_BUENA_FUNCTIONS
 
 .Mon:
 	call .GetTheIndex
@@ -1558,7 +1560,7 @@ GetBuenasPassword:
 	ld l, c
 	add hl, de
 	ld a, [hl]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	ret
 
 .RawString:
@@ -1788,7 +1790,7 @@ CopyRadioTextToRAM:
 	cp TX_FAR
 	jp z, FarCopyRadioText
 	ld de, wRadioText
-	ld bc, SCREEN_WIDTH * 2
+	ld bc, 2 * SCREEN_WIDTH
 	jp CopyBytes
 
 StartRadioStation:

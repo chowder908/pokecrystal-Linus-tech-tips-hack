@@ -80,7 +80,7 @@ Credits::
 	push af
 	ld a, $5
 	ldh [hVBlank], a
-	ld a, $1
+	ld a, TRUE
 	ldh [hInMenu], a
 	xor a
 	ldh [hBGMapMode], a
@@ -198,8 +198,8 @@ Credits_UpdateGFXRequestPath:
 Credits_RequestGFX:
 	xor a
 	ldh [hBGMapMode], a
-	ld a, $8
-	ld [wRequested2bpp], a
+	ld a, 8
+	ld [wRequested2bppSize], a
 	jp Credits_Next
 
 Credits_LYOverride:
@@ -245,7 +245,7 @@ ParseCredits:
 	xor a
 	ldh [hBGMapMode], a
 	hlcoord 0, 5
-	ld bc, 20 * 12
+	ld bc, SCREEN_WIDTH * 12
 	ld a, " "
 	call ByteFill
 
@@ -275,7 +275,7 @@ ParseCredits:
 	push af
 	ld e, a
 	ld d, 0
-	ld hl, CreditsStrings
+	ld hl, CreditsStringsPointers
 	add hl, de
 	add hl, de
 	ld a, [hli]
@@ -306,7 +306,7 @@ ParseCredits:
 .print
 ; Print strings spaced every two lines.
 	call .get
-	ld bc, 20 * 2
+	ld bc, SCREEN_WIDTH * 2
 	call AddNTimes
 	call PlaceString
 	jr .loop
@@ -572,14 +572,17 @@ Credits_LoadBorderGFX:
 	dw CreditsPichuGFX     + 16 tiles
 	dw CreditsPichuGFX     + 32 tiles
 	dw CreditsPichuGFX     + 48 tiles
+
 	dw CreditsSmoochumGFX
 	dw CreditsSmoochumGFX  + 16 tiles
 	dw CreditsSmoochumGFX  + 32 tiles
 	dw CreditsSmoochumGFX  + 48 tiles
+
 	dw CreditsDittoGFX
 	dw CreditsDittoGFX     + 16 tiles
 	dw CreditsDittoGFX     + 32 tiles
 	dw CreditsDittoGFX     + 48 tiles
+
 	dw CreditsIgglybuffGFX
 	dw CreditsIgglybuffGFX + 16 tiles
 	dw CreditsIgglybuffGFX + 32 tiles

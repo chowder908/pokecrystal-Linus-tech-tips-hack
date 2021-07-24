@@ -144,7 +144,7 @@ _SlotMachine:
 	call ByteFill
 	call Slots_InitReelTiles
 	call Slots_GetPals
-	ld a, $7
+	ld a, SPRITE_ANIM_DICT_SLOTS
 	ld hl, wSpriteAnimDict
 	ld [hli], a
 	ld [hl], $40
@@ -159,7 +159,7 @@ _SlotMachine:
 	call Random
 	and %00101010
 	ret nz
-	ld a, 1
+	ld a, TRUE
 	ld [wKeepSevenBiasChance], a ; 12.5% chance
 	ret
 
@@ -185,7 +185,7 @@ SlotsLoop:
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForFirst16Sprites
 	call .PrintCoinsAndPayout
-	call .Stubbed_Function927d3
+	call .Stubbed_AlternateMatchingSevensPalette
 	call DelayFrame
 	and a
 	ret
@@ -194,7 +194,7 @@ SlotsLoop:
 	scf
 	ret
 
-.Stubbed_Function927d3:
+.Stubbed_AlternateMatchingSevensPalette:
 ; dummied out
 	ret
 	ld a, [wReel1ReelAction]
@@ -215,7 +215,7 @@ SlotsLoop:
 	and $7
 	ret nz
 	ldh a, [rBGP]
-	xor %00001100
+	xor %00001100 ; alternates two palettes
 	call DmgToCgbBGPals
 	ret
 
@@ -230,8 +230,7 @@ SlotsLoop:
 	call PrintNum
 	ret
 
-Unreferenced_Function92811:
-; debug function?
+DebugPrintSlotBias: ; unreferenced
 	ld a, [wSlotBias]
 	add 0
 	daa
@@ -248,9 +247,9 @@ Unreferenced_Function92811:
 	ld [hl], a
 	ret
 
-Unreferenced_Function9282c:
-; animate OAM tiles?
-	ld hl, wcf66
+AnimateSlotReelIcons: ; unreferenced
+; This animation was present in pokegold-spaceworld.
+	ld hl, wUnusedSlotReelIconDelay
 	ld a, [hl]
 	inc [hl]
 	and $7
@@ -259,7 +258,7 @@ Unreferenced_Function9282c:
 	ld c, NUM_SPRITE_OAM_STRUCTS - 16
 .loop
 	ld a, [hl]
-	xor %00100000
+	xor $20 ; alternate between $00-$1f and $20-$3f
 	ld [hli], a ; tile id
 rept SPRITEOAMSTRUCT_LENGTH - 1
 	inc hl
@@ -552,7 +551,7 @@ Slots_GetCurrentReelState:
 	dec a
 	and $f
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, REEL_TILEMAP_ADDR
 	add hl, bc
 	ld a, [hli]
@@ -845,21 +844,28 @@ Slots_UpdateReelPositionAndOAM:
 	jr nz, .loop
 	ret
 
-Unreferenced_Function92bbe:
+GetUnknownSlotReelData: ; unreferenced
+; Used to get OAM attribute values for slot reels?
+; (final Slots_UpdateReelPositionAndOAM above reuses tile IDs as OAM palettes)
 	push hl
 	srl a
 	srl a
-	add LOW(.Unknown_92bce)
+	add LOW(.data)
 	ld l, a
 	ld a, 0
-	adc HIGH(.Unknown_92bce)
+	adc HIGH(.data)
 	ld h, a
 	ld a, [hl]
 	pop hl
 	ret
 
-.Unknown_92bce:
-	db 0, 1, 2, 3, 4, 5
+.data:
+	db 0 ; SLOTS_SEVEN
+	db 1 ; SLOTS_POKEBALL
+	db 2 ; SLOTS_CHERRY
+	db 3 ; SLOTS_PIKACHU
+	db 4 ; SLOTS_SQUIRTLE
+	db 5 ; SLOTS_STARYU
 
 ReelActionJumptable:
 	ld hl, REEL_ACTION
@@ -1090,11 +1096,11 @@ ReelAction_WaitReel2SkipTo7:
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .asm_92d02
+	jr z, .ready
 	dec [hl]
 	ret
 
-.asm_92d02
+.ready
 	ld a, SFX_THROW_BALL
 	call Slots_PlaySFX
 	ld hl, REEL_ACTION
@@ -1140,7 +1146,7 @@ ReelAction_InitGolem:
 	depixel 12, 13
 	ld a, SPRITE_ANIM_INDEX_SLOTS_GOLEM
 	call InitSpriteAnimStruct
-	ld hl, SPRITEANIMSTRUCT_0E
+	ld hl, SPRITEANIMSTRUCT_VAR3
 	add hl, bc
 	pop af
 	ld [hl], a
@@ -1968,7 +1974,7 @@ Slots_AnimateGolem:
 	dw .roll
 
 .init
-	ld hl, SPRITEANIMSTRUCT_0E
+	ld hl, SPRITEANIMSTRUCT_VAR3
 	add hl, bc
 	ld a, [hl]
 	and a
@@ -1985,7 +1991,7 @@ Slots_AnimateGolem:
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc
 	inc [hl]
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld [hl], $30
 	ld hl, SPRITEANIMSTRUCT_XOFFSET
@@ -1993,7 +1999,7 @@ Slots_AnimateGolem:
 	ld [hl], $0
 
 .fall
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, [hl]
 	cp $20
@@ -2012,7 +2018,7 @@ Slots_AnimateGolem:
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc
 	inc [hl]
-	ld hl, SPRITEANIMSTRUCT_0D
+	ld hl, SPRITEANIMSTRUCT_VAR2
 	add hl, bc
 	ld [hl], $2
 	ld a, 1
@@ -2031,7 +2037,7 @@ Slots_AnimateGolem:
 	jr nc, .restart
 	and $3
 	ret nz
-	ld hl, SPRITEANIMSTRUCT_0D
+	ld hl, SPRITEANIMSTRUCT_VAR2
 	add hl, bc
 	ld a, [hl]
 	xor $ff
@@ -2101,11 +2107,11 @@ Slots_AnimateChansey:
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc
 	inc [hl]
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld [hl], $8
 .two
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, [hl]
 	and a

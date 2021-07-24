@@ -62,7 +62,7 @@ Phone_FindOpenSlot:
 
 GetRemainingSpaceInPhoneList:
 	xor a
-	ld [wBuffer1], a
+	ld [wRegisteredPhoneNumbers], a
 	ld hl, PermanentNumbers
 .loop
 	ld a, [hli]
@@ -76,7 +76,7 @@ GetRemainingSpaceInPhoneList:
 	ld c, a
 	call _CheckCellNum
 	jr c, .permanent
-	ld hl, wBuffer1
+	ld hl, wRegisteredPhoneNumbers
 	inc [hl]
 .permanent
 	pop hl
@@ -87,13 +87,14 @@ GetRemainingSpaceInPhoneList:
 
 .done
 	ld a, CONTACT_LIST_SIZE
-	ld hl, wBuffer1
+	ld hl, wRegisteredPhoneNumbers
 	sub [hl]
 	ret
 
 INCLUDE "data/phone/permanent_numbers.asm"
 
-FarPlaceString:
+BrokenPlaceFarString:
+; This routine is not in bank 0 and will fail or crash if called.
 	ldh a, [hROMBank]
 	push af
 	ld a, b
@@ -223,7 +224,7 @@ GetAvailableCallers:
 .different_map
 	ld a, [wNumAvailableCallers]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	inc a
 	ld [wNumAvailableCallers], a
 	ld hl, wAvailableCallers
@@ -246,7 +247,7 @@ CheckSpecialPhoneCall::
 	ld c, a
 	ld b, 0
 	ld hl, SpecialPhoneCallList
-	ld a, 6
+	ld a, SPECIALCALL_SIZE
 	call AddNTimes
 	ld a, [hli]
 	ld h, [hl]
@@ -290,7 +291,7 @@ CheckSpecialPhoneCall::
 	ld c, a
 	ld b, 0
 	ld hl, SpecialPhoneCallList
-	ld a, 6
+	ld a, SPECIALCALL_SIZE
 	call AddNTimes
 	ret
 
@@ -311,7 +312,7 @@ SpecialCallWhereverYouAre:
 	scf
 	ret
 
-Function90199:
+MakePhoneCallFromPokegear:
 	; Don't do the call if you're in a link communication
 	ld a, [wLinkMode]
 	and a
@@ -353,7 +354,7 @@ Function90199:
 	ld hl, PHONE_CONTACT_SCRIPT1_BANK
 	add hl, de
 	ld b, [hl]
-	ld hl, PHONE_CONTACT_SCRIPT1_ADDR_LO
+	ld hl, PHONE_CONTACT_SCRIPT1_ADDR
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -380,11 +381,11 @@ Function90199:
 
 LoadPhoneScriptBank:
 	memcall wPhoneScriptBank
-	return
+	endcallback
 
 LoadOutOfAreaScript:
 	scall PhoneOutOfAreaScript
-	return
+	endcallback
 
 LoadCallerScript:
 	nop
@@ -437,7 +438,7 @@ Script_SpecialBillCall::
 	ld e, PHONE_BILL
 	jp LoadCallerScript
 
-LoadElmCallScript:
+Script_SpecialElmCall: ; unreferenced
 	callasm .LoadElmScript
 	pause 30
 	sjump Script_ReceivePhoneCall
@@ -455,17 +456,17 @@ RingTwice_StartCall:
 .Ring:
 	call Phone_StartRinging
 	call Phone_Wait20Frames
-	call Phone_CallerTextboxWithName
+	call .CallerTextboxWithName
 	call Phone_Wait20Frames
 	call Phone_CallerTextbox
 	call Phone_Wait20Frames
-	call Phone_CallerTextboxWithName
+	call .CallerTextboxWithName
 	ret
 
-Phone_CallerTextboxWithName:
+.CallerTextboxWithName:
 	ld a, [wCurCaller]
 	ld b, a
-	call Function90363
+	call Phone_TextboxWithName
 	ret
 
 PhoneCall::
@@ -475,22 +476,22 @@ PhoneCall::
 	ld [wPhoneCaller], a
 	ld a, d
 	ld [wPhoneCaller + 1], a
-	call Phone_FirstOfTwoRings
-	call Phone_FirstOfTwoRings
+	call .Ring
+	call .Ring
 	farcall StubbedTrainerRankings_PhoneCalls
 	ret
 
-Phone_FirstOfTwoRings:
+.Ring:
 	call Phone_StartRinging
 	call Phone_Wait20Frames
-	call Phone_CallerTextboxWithName2
+	call .CallerTextboxWithName
 	call Phone_Wait20Frames
 	call Phone_CallerTextbox
 	call Phone_Wait20Frames
-	call Phone_CallerTextboxWithName2
+	call .CallerTextboxWithName
 	ret
 
-Phone_CallerTextboxWithName2:
+.CallerTextboxWithName:
 	call Phone_CallerTextbox
 	hlcoord 1, 2
 	ld [hl], "☎"
@@ -502,7 +503,7 @@ Phone_CallerTextboxWithName2:
 	ld e, a
 	ld a, [wPhoneCaller + 1]
 	ld d, a
-	call FarPlaceString
+	call BrokenPlaceFarString
 	ret
 
 Phone_NoSignal:
@@ -528,7 +529,7 @@ Phone_CallEnd:
 	call HangUp_Wait20Frames
 	ret
 
-Function90316:
+HangUp_ShutDown: ; unreferenced
 	ld de, SFX_SHUT_DOWN_PC
 	call PlaySFX
 	ret
@@ -575,7 +576,7 @@ Phone_Wait20Frames:
 	farcall PhoneRing_CopyTilemapAtOnce
 	ret
 
-Function90363:
+Phone_TextboxWithName:
 	push bc
 	call Phone_CallerTextbox
 	hlcoord 1, 1
@@ -585,7 +586,7 @@ Function90363:
 	ld d, h
 	ld e, l
 	pop bc
-	call Function90380
+	call GetCallerClassAndName
 	ret
 
 Phone_CallerTextbox:
@@ -595,7 +596,7 @@ Phone_CallerTextbox:
 	call Textbox
 	ret
 
-Function90380:
+GetCallerClassAndName:
 	ld h, d
 	ld l, e
 	ld a, b
@@ -720,7 +721,7 @@ PhoneJustTalkToThemText:
 	text_far _PhoneJustTalkToThemText
 	text_end
 
-PhoneThankYouTextScript:
+PhoneThankYouTextScript: ; unreferenced
 	writetext PhoneThankYouText
 	end
 

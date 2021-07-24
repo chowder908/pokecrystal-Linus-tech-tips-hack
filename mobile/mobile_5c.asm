@@ -37,7 +37,7 @@ Function170000:
 
 Function17005a:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [$a824]
 	ld [wOTTrademonSpecies], a
 	ld hl, $a827
@@ -74,29 +74,29 @@ Function17005a:
 INCLUDE "engine/events/battle_tower/battle_tower.asm"
 
 Function170be4:
-	ld a, $5
-	call GetSRAMBank
+	ld a, BANK(s5_a894)
+	call OpenSRAM
 	xor a
-	ld hl, $a894
-	ld bc, $0008
+	ld hl, s5_a894
+	ld bc, 6 + 2
 	call ByteFill
 	call CloseSRAM
 	ret
 
 Clears5_a89a:
-	ld a, $5
-	call GetSRAMBank
-	ld hl, $a89a
+	ld a, BANK(s5_a89a)
+	call OpenSRAM
+	ld hl, s5_a89a
 	xor a
 	ld [hli], a
 	ld [hl], a
 	call CloseSRAM
 	ret
 
-Function170c06:
-	ld a, $5
-	call GetSRAMBank
-	ld hl, $a894
+Function170c06: ; unreferenced
+	ld a, BANK(s5_a894)
+	call OpenSRAM
+	ld hl, s5_a894
 	ld a, [wBattleResult]
 	and a ; WIN?
 	jr nz, .asm_170c15
@@ -105,10 +105,10 @@ Function170c06:
 .asm_170c15
 	inc hl
 	inc hl
-	ld a, [$a89b]
+	ld a, [s5_a89a + 1]
 	add [hl]
 	ld [hld], a
-	ld a, [$a89a]
+	ld a, [s5_a89a]
 	adc [hl]
 	ld [hli], a
 	jr nc, .asm_170c27
@@ -346,16 +346,7 @@ Function171a11:
 	ret
 
 Function171a36:
-	ld a, [wcd49]
-	ld e, a
-	ld d, 0
-	ld hl, Jumptable_171a45
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable Jumptable_171a45, wcd49
 
 Jumptable_171a45:
 	dw Function171a95
@@ -494,7 +485,7 @@ Function171b4b:
 	depixel 8, 2
 	ld a, SPRITE_ANIM_INDEX_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, $8
 	ld [hl], a
@@ -502,7 +493,7 @@ Function171b4b:
 	depixel 8, 19
 	ld a, SPRITE_ANIM_INDEX_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, $9
 	ld [hl], a
@@ -510,7 +501,7 @@ Function171b4b:
 	depixel 17, 14, 2, 0
 	ld a, SPRITE_ANIM_INDEX_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
-	ld hl, SPRITEANIMSTRUCT_0C
+	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, $a
 	ld [hl], a
@@ -589,7 +580,7 @@ Function171bdc:
 
 Function171beb:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [wcd4a]
 	ld [$aa4a], a
 	call CloseSRAM

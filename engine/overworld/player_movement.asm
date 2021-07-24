@@ -1,5 +1,4 @@
 DoPlayerMovement::
-
 	call .GetDPad
 	ld a, movement_step_sleep
 	ld [wMovementAnimation], a
@@ -12,7 +11,6 @@ DoPlayerMovement::
 	ret
 
 .GetDPad:
-
 	ldh a, [hJoyDown]
 	ld [wCurInput], a
 
@@ -311,7 +309,7 @@ DoPlayerMovement::
 	scf
 	ret
 
-; unused
+.unused ; unreferenced
 	xor a
 	ret
 
@@ -364,7 +362,7 @@ DoPlayerMovement::
 	and 7
 	ld e, a
 	ld d, 0
-	ld hl, .data_8021e
+	ld hl, .ledge_table
 	add hl, de
 	ld a, [wFacingDirection]
 	and [hl]
@@ -382,7 +380,7 @@ DoPlayerMovement::
 	xor a
 	ret
 
-.data_8021e
+.ledge_table
 	db FACE_RIGHT             ; COLL_HOP_RIGHT
 	db FACE_LEFT              ; COLL_HOP_LEFT
 	db FACE_UP                ; COLL_HOP_UP
@@ -394,7 +392,7 @@ DoPlayerMovement::
 
 .CheckWarp:
 ; Bug: Since no case is made for STANDING here, it will check
-; [.edgewarps + $ff]. This resolves to $3e at $8035a.
+; [.EdgeWarps + $ff]. This resolves to $3e.
 ; This causes wWalkingIntoEdgeWarp to be nonzero when standing on tile $3e,
 ; making bumps silent.
 
@@ -469,7 +467,8 @@ DoPlayerMovement::
 	ret
 
 .Steps:
-; entries correspond to STEP_* constants
+; entries correspond to STEP_* constants (see constants/map_object_constants.asm)
+	table_width 2, DoPlayerMovement.Steps
 	dw .SlowStep
 	dw .NormalStep
 	dw .FastStep
@@ -478,6 +477,7 @@ DoPlayerMovement::
 	dw .TurningStep
 	dw .BackJumpStep
 	dw .FinishFacing
+	assert_table_length NUM_STEPS
 
 .SlowStep:
 	slow_step DOWN
@@ -621,7 +621,7 @@ ENDM
 ; Returns 1 if there is no NPC in front
 ; Returns 2 if there is a movable NPC in front
 	ld a, 0
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 ; Load the next X coordinate into d
 	ld a, [wPlayerStandingMapX]
 	ld d, a
@@ -784,7 +784,7 @@ ENDM
 	push bc
 	ld a, PLAYER_NORMAL
 	ld [wPlayerState], a
-	call ReplaceKrisSprite ; UpdateSprites
+	call UpdatePlayerSprite ; UpdateSprites
 	pop bc
 	ret
 

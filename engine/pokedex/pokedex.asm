@@ -91,7 +91,7 @@ InitPokedex:
 	ld [wJumptableIndex], a
 	ld [wPrevDexEntryJumptableIndex], a
 	ld [wPrevDexEntryBackup], a
-	ld [wcf66], a
+	ld [wUnusedPokedexByte], a
 
 	call Pokedex_CheckUnlockedUnownMode
 
@@ -374,7 +374,7 @@ Pokedex_UpdateDexEntryScreen:
 	ld a, [wLastVolume]
 	and a
 	jr z, .max_volume
-	ld a, $77
+	ld a, MAX_VOLUME
 	ld [wLastVolume], a
 
 .max_volume
@@ -513,7 +513,8 @@ Pokedex_InitOptionScreen:
 	call ClearSprites
 	call Pokedex_DrawOptionScreenBG
 	call Pokedex_InitArrowCursor
-	ld a, [wCurDexMode] ; Index of the topmost visible item in a scrolling menu ???
+	; point cursor to the current dex mode (modes == menu item indexes)
+	ld a, [wCurDexMode]
 	ld [wDexArrowCursorPosIndex], a
 	call Pokedex_DisplayModeDescription
 	call WaitBGMap
@@ -1055,8 +1056,8 @@ Pokedex_ListingPosChanged:
 	ret
 
 Pokedex_FillColumn:
-; Fills a column starting at HL, going downwards.
-; B is the height of the column and A is the tile it's filled with.
+; Fills a column starting at hl, going downwards.
+; b is the height of the column, and a is the tile it's filled with.
 	push de
 	ld de, SCREEN_WIDTH
 .loop
@@ -1166,12 +1167,12 @@ Pokedex_DrawDexEntryScreenBG:
 	call Pokedex_PlaceFrontpicTopLeftCorner
 	ret
 
-.Unused:
+.Number: ; unreferenced
 	db $5c, $5d, -1 ; No.
 .Height:
 	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
 .Weight:
-	db "WT   ???lb", -1 ; WT   ???lb
+	db "WT   ???lb", -1
 .MenuItems:
 	db $3b, " PAGE AREA CRY PRNT", -1
 
@@ -1482,7 +1483,7 @@ Pokedex_PrintListing:
 ; Load de with wPokedexOrder + [wDexListingScrollOffset]
 	ld a, [wDexListingScrollOffset]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wPokedexOrder
 	add hl, de
 	ld e, l
@@ -1492,7 +1493,8 @@ Pokedex_PrintListing:
 .loop
 	push af
 	ld a, [de]
-	ld [wTempSpecies], a ; also sets wNamedObjectIndexBuffer
+	ld [wTempSpecies], a ; also sets wNamedObjectIndex
+	assert wTempSpecies == wNamedObjectIndex
 	push de
 	push hl
 	call .PrintEntry
@@ -1581,7 +1583,7 @@ Pokedex_GetSelectedMon:
 	ld hl, wDexListingScrollOffset
 	add [hl]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wPokedexOrder
 	add hl, de
 	ld a, [hl]
@@ -1803,7 +1805,7 @@ Pokedex_PrevSearchMonType:
 	jr .done
 
 .wrap_around
-	ld [hl], NUM_TYPES - 1
+	ld [hl], NUM_TYPES
 
 .done
 	scf
@@ -1816,7 +1818,7 @@ Pokedex_NextSearchMonType:
 
 	ld hl, wDexSearchMonType1
 	ld a, [hl]
-	cp NUM_TYPES - 1
+	cp NUM_TYPES
 	jr nc, .type1_wrap_around
 	inc [hl]
 	jr .done
@@ -1827,7 +1829,7 @@ Pokedex_NextSearchMonType:
 .type2
 	ld hl, wDexSearchMonType2
 	ld a, [hl]
-	cp NUM_TYPES - 1
+	cp NUM_TYPES
 	jr nc, .type2_wrap_around
 	inc [hl]
 	jr .done
@@ -1860,7 +1862,7 @@ Pokedex_PlaceTypeString:
 	ld e, a
 	ld d, 0
 	ld hl, PokedexTypeSearchStrings
-rept 9
+rept POKEDEX_TYPE_STRING_LENGTH
 	add hl, de
 endr
 	ld e, l
@@ -2305,7 +2307,6 @@ Pokedex_FillBox:
 	jp FillBoxWithByte
 
 Pokedex_BlackOutBG:
-; Make BG palettes black so that the BG becomes all black.
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wBGPals1)
@@ -2363,7 +2364,7 @@ Pokedex_LoadSelectedMonTiles:
 
 .QuestionMark:
 	ld a, BANK(sScratch)
-	call GetSRAMBank
+	call OpenSRAM
 	farcall LoadQuestionMarkPic
 	ld hl, vTiles2
 	ld de, sScratch
@@ -2479,8 +2480,9 @@ Pokedex_CheckSGB:
 
 Pokedex_LoadUnownFont:
 	ld a, BANK(sScratch)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, UnownFont
+	; sScratch + $188 was the address of sDecompressBuffer in pokegold
 	ld de, sScratch + $188
 	ld bc, 39 tiles
 	ld a, BANK(UnownFont)

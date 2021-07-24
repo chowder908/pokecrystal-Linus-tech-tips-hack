@@ -3,7 +3,7 @@ BillsGrandfather:
 	jr c, .cancel
 	ld a, [wCurPartySpecies]
 	ld [wScriptVar], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	jp CopyPokemonName_Buffer1_Buffer3
 
@@ -33,7 +33,7 @@ HaircutOrGrooming:
 	cp EGG
 	jr z, .egg
 	push hl
-	call GetCurNick
+	call GetCurNickname
 	call CopyPokemonName_Buffer1_Buffer3
 	pop hl
 	call Random

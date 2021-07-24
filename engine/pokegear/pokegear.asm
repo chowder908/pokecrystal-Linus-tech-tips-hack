@@ -65,7 +65,7 @@ PokeGear:
 	ldh [hBGMapAddress], a
 	ld a, HIGH(vBGMap0)
 	ldh [hBGMapAddress + 1], a
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	call ExitPokegearRadio_HandleMusic
 	ret
@@ -92,7 +92,7 @@ PokeGear:
 	ld [wJumptableIndex], a ; POKEGEARSTATE_CLOCKINIT
 	ld [wPokegearCard], a ; POKEGEARCARD_CLOCK
 	ld [wPokegearMapRegion], a ; JOHTO_REGION
-	ld [wcf66], a
+	ld [wUnusedPokegearByte], a
 	ld [wPokegearPhoneScrollPosition], a
 	ld [wPokegearPhoneCursorPosition], a
 	ld [wPokegearPhoneSelectedPerson], a
@@ -269,7 +269,7 @@ InitPokegearTilemap:
 	ld a, HIGH(vBGMap0)
 	ldh [hBGMapAddress + 1], a
 	call .UpdateBGMap
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	jr .finish
 
 .kanto_0
@@ -432,16 +432,7 @@ Pokegear_FinishTilemap:
 	ret
 
 PokegearJumptable:
-	ld a, [wJumptableIndex]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .Jumptable, wJumptableIndex
 
 .Jumptable:
 ; entries correspond to POKEGEARSTATE_* constants
@@ -914,7 +905,7 @@ PokegearPhone_MakePhoneCall:
 	call WaitSFX
 	ld a, [wPokegearPhoneSelectedPerson]
 	ld b, a
-	call Function90199
+	call MakePhoneCallFromPokegear
 	ld c, 10
 	call DelayFrames
 	ld hl, wOptions
@@ -1013,11 +1004,9 @@ PokegearPhone_GetDPad:
 
 PokegearPhone_UpdateCursor:
 	ld a, " "
-x = 4
-rept PHONE_DISPLAY_HEIGHT
-	hlcoord 1, x
+for y, PHONE_DISPLAY_HEIGHT
+	hlcoord 1, 4 + y * 2
 	ld [hl], a
-x = x + 2
 endr
 	hlcoord 1, 4
 	ld a, [wPokegearPhoneCursorPosition]
@@ -1046,24 +1035,24 @@ PokegearPhone_UpdateDisplayList:
 	ld hl, wPhoneList
 	add hl, de
 	xor a
-	ld [wPokegearPhoneLoadNameBuffer], a
+	ld [wPokegearPhoneDisplayPosition], a
 .loop
 	ld a, [hli]
 	push hl
 	push af
 	hlcoord 2, 4
-	ld a, [wPokegearPhoneLoadNameBuffer]
+	ld a, [wPokegearPhoneDisplayPosition]
 	ld bc, 2 * SCREEN_WIDTH
 	call AddNTimes
 	ld d, h
 	ld e, l
 	pop af
 	ld b, a
-	call Function90380
+	call GetCallerClassAndName
 	pop hl
-	ld a, [wPokegearPhoneLoadNameBuffer]
+	ld a, [wPokegearPhoneDisplayPosition]
 	inc a
-	ld [wPokegearPhoneLoadNameBuffer], a
+	ld [wPokegearPhoneDisplayPosition], a
 	cp PHONE_DISPLAY_HEIGHT
 	jr c, .loop
 	call PokegearPhone_UpdateCursor
@@ -1280,7 +1269,7 @@ PokegearPhoneContactSubmenu:
 	dw .Call
 	dw .Cancel
 
-; unused
+GetAMPMHours: ; unreferenced
 	ldh a, [hHours]
 	cp 12
 	jr c, .am
@@ -1374,7 +1363,7 @@ INCBIN "gfx/pokegear/clock.tilemap.rle"
 _UpdateRadioStation:
 	jr UpdateRadioStation
 
-; called from engine/sprite_anims.asm
+; called from engine/gfx/sprite_anims.asm
 
 AnimateTuningKnob:
 	push bc
@@ -1451,7 +1440,7 @@ UpdateRadioStation:
 	ldh [hBGMapMode], a
 	ret
 
-; unused
+LoadPokegearRadioChannelPointer: ; unreferenced
 	ld [wPokegearRadioChannelBank], a
 	ld a, [hli]
 	ld [wPokegearRadioChannelAddr], a
@@ -1461,7 +1450,6 @@ UpdateRadioStation:
 
 RadioChannels:
 ; entries correspond to constants/radio_constants.asm
-
 ; frequency value given here = 4 × ingame_frequency − 2
 	dbw 16, .PKMNTalkAndPokedexShow ; 04.5
 	dbw 28, .PokemonMusic           ; 07.5
@@ -1476,7 +1464,6 @@ RadioChannels:
 
 .PKMNTalkAndPokedexShow:
 ; Pokédex Show in the morning
-
 ; Oak's Pokémon Talk in the afternoon and evening
 	call .InJohto
 	jr nc, .NoSignal
@@ -1551,14 +1538,13 @@ RadioChannels:
 
 .InJohto:
 ; if in Johto or on the S.S. Aqua, set carry
-
 ; otherwise clear carry
 	ld a, [wPokegearMapPlayerIconLandmark]
 	cp LANDMARK_FAST_SHIP
 	jr z, .johto
 	cp KANTO_LANDMARK
 	jr c, .johto
-.kanto
+; kanto
 	and a
 	ret
 
@@ -1693,7 +1679,7 @@ LoadStation_EvolutionRadio:
 	ld de, UnownStationName
 	ret
 
-Unreferenced_LoadStation:
+DummyLoadStation: ; unreferenced
 	ret
 
 RadioMusicRestartDE:
@@ -1730,6 +1716,7 @@ Radio_BackUpFarCallParams:
 NoRadioStation:
 	call NoRadioMusic
 	call NoRadioName
+; no radio channel
 	xor a
 	ld [wPokegearRadioChannelBank], a
 	ld [wPokegearRadioChannelAddr], a
@@ -1968,7 +1955,7 @@ PlayRadio:
 .PlayStation:
 	ld a, ENTER_MAP_MUSIC
 	ld [wPokegearRadioMusicPlaying], a
-	ld hl, .StationPointers
+	ld hl, PlayRadioStationPointers
 	ld d, 0
 	add hl, de
 	add hl, de
@@ -1995,9 +1982,10 @@ PlayRadio:
 	call WaitBGMap
 	ret
 
-.StationPointers:
+PlayRadioStationPointers:
 ; entries correspond to MAPRADIO_* constants
-	dw .OakOrPnP
+	table_width 2, PlayRadioStationPointers
+	dw LoadStation_PokemonChannel
 	dw LoadStation_OaksPokemonTalk
 	dw LoadStation_PokedexShow
 	dw LoadStation_PokemonMusic
@@ -2006,8 +1994,9 @@ PlayRadio:
 	dw LoadStation_PlacesAndPeople
 	dw LoadStation_LetsAllSing
 	dw LoadStation_RocketRadio
+	assert_table_length NUM_MAP_RADIO_STATIONS
 
-.OakOrPnP:
+LoadStation_PokemonChannel:
 	call IsInJohto
 	and a
 	jr nz, .kanto
@@ -2017,7 +2006,7 @@ PlayRadio:
 	jp z, LoadStation_PokedexShow
 	jp LoadStation_OaksPokemonTalk
 
-.kanto
+.kanto:
 	jp LoadStation_PlacesAndPeople
 
 PokegearMap:
@@ -2050,7 +2039,7 @@ _FlyMap:
 	lb bc, BANK(FlyMapLabelBorderGFX), 6
 	call Request1bpp
 	call FlyMap
-	call ret_91c8f
+	call Pokegear_DummyFunction
 	ld b, SCGB_POKEGEAR_PALS
 	call GetSGBLayout
 	call SetPalettes
@@ -2063,7 +2052,7 @@ _FlyMap:
 	ld a, [hl]
 	and A_BUTTON
 	jr nz, .pressedA
-	call FlyMapScroll
+	call .HandleDPad
 	call GetMapCursorCoordinates
 	farcall PlaySpriteAnimations
 	call DelayFrame
@@ -2086,7 +2075,7 @@ _FlyMap:
 	pop af
 	ldh [hInMenu], a
 	call ClearBGPalettes
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	xor a ; LOW(vBGMap0)
 	ldh [hBGMapAddress], a
@@ -2096,7 +2085,7 @@ _FlyMap:
 	ld e, a
 	ret
 
-FlyMapScroll:
+.HandleDPad:
 	ld a, [wStartFlypoint]
 	ld e, a
 	ld a, [wEndFlypoint]
@@ -2255,7 +2244,7 @@ HasVisitedSpawn:
 
 INCLUDE "data/maps/flypoints.asm"
 
-ret_91c8f:
+Pokegear_DummyFunction:
 	ret
 
 FlyMap:
@@ -2277,16 +2266,13 @@ FlyMap:
 ; The first 46 locations are part of Johto. The rest are in Kanto.
 	cp KANTO_LANDMARK
 	jr nc, .KantoFlyMap
-.JohtoFlyMap:
+; Johto fly map
 ; Note that .NoKanto should be modified in tandem with this branch
 	push af
-; Start from New Bark Town
-	ld a, FLY_NEW_BARK
-	ld [wTownMapPlayerIconLandmark], a
-; Flypoints begin at New Bark Town...
+	ld a, JOHTO_FLYPOINT ; first Johto flypoint
+	ld [wTownMapPlayerIconLandmark], a ; first one is default (New Bark Town)
 	ld [wStartFlypoint], a
-; ..and end at Silver Cave.
-	ld a, FLY_MT_SILVER
+	ld a, KANTO_FLYPOINT - 1 ; last Johto flypoint
 	ld [wEndFlypoint], a
 ; Fill out the map
 	call FillJohtoMap
@@ -2310,16 +2296,11 @@ FlyMap:
 	and a
 	jr z, .NoKanto
 ; Kanto's map is only loaded if we've visited Indigo Plateau
-
-; Flypoints begin at Pallet Town...
-	ld a, FLY_PALLET
+	ld a, KANTO_FLYPOINT ; first Kanto flypoint
 	ld [wStartFlypoint], a
-; ...and end at Indigo Plateau
-	ld a, FLY_INDIGO
+	ld a, NUM_FLYPOINTS - 1 ; last Kanto flypoint
 	ld [wEndFlypoint], a
-; Because Indigo Plateau is the first flypoint the player
-; visits, it's made the default flypoint.
-	ld [wTownMapPlayerIconLandmark], a
+	ld [wTownMapPlayerIconLandmark], a ; last one is default (Indigo Plateau)
 ; Fill out the map
 	call FillKantoMap
 	call .MapHud
@@ -2329,14 +2310,10 @@ FlyMap:
 
 .NoKanto:
 ; If Indigo Plateau hasn't been visited, we use Johto's map instead
-
-; Start from New Bark Town
-	ld a, FLY_NEW_BARK
-	ld [wTownMapPlayerIconLandmark], a
-; Flypoints begin at New Bark Town...
+	ld a, JOHTO_FLYPOINT ; first Johto flypoint
+	ld [wTownMapPlayerIconLandmark], a ; first one is default (New Bark Town)
 	ld [wStartFlypoint], a
-; ..and end at Silver Cave
-	ld a, FLY_MT_SILVER
+	ld a, KANTO_FLYPOINT - 1 ; last Johto flypoint
 	ld [wEndFlypoint], a
 	call FillJohtoMap
 	pop af
@@ -2429,10 +2406,10 @@ Pokedex_GetArea:
 
 .left
 	ldh a, [hWY]
-	cp $90
+	cp SCREEN_HEIGHT_PX
 	ret z
 	call ClearSprites
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	xor a ; JOHTO_REGION
 	call .GetAndPlaceNest
@@ -2593,7 +2570,7 @@ Pokedex_GetArea:
 	jr z, .johto
 	cp KANTO_LANDMARK
 	jr c, .johto
-.kanto
+; kanto
 	ld a, [wTownMapCursorLandmark]
 	and a
 	jr z, .clear
@@ -2733,7 +2710,7 @@ TownMapMon:
 	ld a, [wCurPartyMon]
 	ld hl, wPartySpecies
 	ld e, a
-	ld d, $0
+	ld d, 0
 	add hl, de
 	ld a, [hl]
 	ld [wTempIconSpecies], a
@@ -2761,7 +2738,7 @@ TownMapPlayerIcon:
 	ld c, 4 ; # tiles
 	call Request2bpp
 ; Walking icon
-	ld hl, $c0
+	ld hl, 12 tiles
 	add hl, de
 	ld d, h
 	ld e, l
@@ -2813,7 +2790,9 @@ INCBIN "gfx/pokegear/dexmap_nest_icon.2bpp"
 FlyMapLabelBorderGFX:
 INCBIN "gfx/pokegear/flymap_label_border.1bpp"
 
-Unreferenced_Function92311:
+EntireFlyMap: ; unreferenced
+; Similar to _FlyMap, but scrolls through the entire
+; Flypoints data of both regions. A debug function?
 	xor a
 	ld [wTownMapPlayerIconLandmark], a
 	call ClearBGPalettes
@@ -2866,7 +2845,7 @@ Unreferenced_Function92311:
 
 .pressedB
 	ld a, -1
-	jr .finished_a_b
+	jr .exit
 
 .pressedA
 	ld a, [wTownMapPlayerIconLandmark]
@@ -2876,12 +2855,12 @@ Unreferenced_Function92311:
 	ld de, Flypoints + 1
 	add hl, de
 	ld a, [hl]
-.finished_a_b
+.exit
 	ld [wTownMapPlayerIconLandmark], a
 	pop af
 	ldh [hInMenu], a
 	call ClearBGPalettes
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	xor a ; LOW(vBGMap0)
 	ldh [hBGMapAddress], a
@@ -2895,44 +2874,44 @@ Unreferenced_Function92311:
 	ld hl, hJoyLast
 	ld a, [hl]
 	and D_DOWN | D_RIGHT
-	jr nz, .down_right
+	jr nz, .ScrollNext
 	ld a, [hl]
 	and D_UP | D_LEFT
-	jr nz, .up_left
+	jr nz, .ScrollPrev
 	ret
 
-.down_right
+.ScrollNext:
 	ld hl, wTownMapPlayerIconLandmark
 	ld a, [hl]
-	cp FLY_INDIGO
-	jr c, .okay_dr
+	cp NUM_FLYPOINTS - 1
+	jr c, .NotAtEndYet
 	ld [hl], -1
-.okay_dr
+.NotAtEndYet:
 	inc [hl]
-	jr .continue
+	jr .FillMap
 
-.up_left
+.ScrollPrev:
 	ld hl, wTownMapPlayerIconLandmark
 	ld a, [hl]
 	and a
-	jr nz, .okay_ul
-	ld [hl], FLY_INDIGO + 1
-.okay_ul
+	jr nz, .NotAtStartYet
+	ld [hl], NUM_FLYPOINTS
+.NotAtStartYet:
 	dec [hl]
-.continue
+.FillMap:
 	ld a, [wTownMapPlayerIconLandmark]
 	cp KANTO_FLYPOINT
-	jr c, .johto
+	jr c, .InJohto
 	call FillKantoMap
 	xor a
-	ld b, $9c
-	jr .finish
+	ld b, HIGH(vBGMap1)
+	jr .Finally
 
-.johto
+.InJohto:
 	call FillJohtoMap
-	ld a, $90
-	ld b, $98
-.finish
+	ld a, SCREEN_HEIGHT_PX
+	ld b, HIGH(vBGMap0)
+.Finally:
 	ldh [hWY], a
 	ld a, b
 	ldh [hBGMapAddress + 1], a

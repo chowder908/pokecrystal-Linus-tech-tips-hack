@@ -263,9 +263,9 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$49`: `closetext`
 
 
-## `$4A`: <code>writeunusedbytebuffer <i>byte</i></code>
+## `$4A`: <code>writeunusedbyte <i>byte</i></code>
 
-<code>[<i>wUnusedScriptByteBuffer</i>] = <i>byte</i></code>
+<code>[<i>wUnusedScriptByte</i>] = <i>byte</i></code>
 
 
 ## `$4B`: <code>farwritetext <i>text_pointer</i></code>
@@ -470,7 +470,7 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$8C`: <code>deactivatefacing <i>length</i></code>
 
 
-## `$8D`: <code>prioritysjump <i>script</i></code>
+## `$8D`: <code>sdefer <i>script</i></code>
 
 
 ## `$8E`: `warpcheck`
@@ -479,13 +479,13 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$8F`: <code>stopandsjump <i>script</i></code>
 
 
-## `$90`: `return`
+## `$90`: `endcallback`
 
 
 ## `$91`: `end`
 
 
-## `$92`: <code>reloadandreturn <i>which_method</i></code>
+## `$92`: <code>reloadend <i>which_method</i></code>
 
 
 ## `$93`: `endall`

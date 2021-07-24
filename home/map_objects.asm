@@ -20,7 +20,7 @@ GetSpriteVTile::
 	ld hl, wUsedSprites + 2
 	ld c, SPRITE_GFX_LIST_CAPACITY - 1
 	ld b, a
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	cp 0
 	jr z, .nope
 	ld a, b
@@ -210,14 +210,14 @@ GetMapObject::
 
 CheckObjectVisibility::
 ; Sets carry if the object is not visible on the screen.
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	call GetMapObject
 	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
 	add hl, bc
 	ld a, [hl]
 	cp -1
 	jr z, .not_visible
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	call GetObjectStruct
 	and a
 	ret
@@ -237,7 +237,7 @@ CheckObjectTime::
 	ld a, [hl]
 	cp -1
 	jr z, .timeofday_always
-	ld hl, .TimeOfDayValues_191e
+	ld hl, .TimesOfDay
 	ld a, [wTimeOfDay]
 	add l
 	ld l, a
@@ -257,7 +257,7 @@ CheckObjectTime::
 	and a
 	ret
 
-.TimeOfDayValues_191e:
+.TimesOfDay:
 ; entries correspond to TimeOfDay values
 	db MORN
 	db DAY
@@ -300,22 +300,22 @@ CheckObjectTime::
 	scf
 	ret
 
-; unused
-	ldh [hMapObjectIndexBuffer], a
+CopyMapObjectStruct:: ; unreferenced
+	ldh [hMapObjectIndex], a
 	call GetMapObject
 	call CopyObjectStruct
 	ret
 
-_CopyObjectStruct::
-	ldh [hMapObjectIndexBuffer], a
+UnmaskCopyMapObjectStruct::
+	ldh [hMapObjectIndex], a
 	call UnmaskObject
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	call GetMapObject
 	farcall CopyObjectStruct
 	ret
 
 ApplyDeletionToMapObject::
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	call GetMapObject
 	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
 	add hl, bc
@@ -362,7 +362,7 @@ CopyPlayerObjectTemplate::
 	call CopyBytes
 	ret
 
-Unreferenced_Function19b8:
+DeleteFollowerMapObject: ; unreferenced
 	call GetMapObject
 	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
 	add hl, bc
@@ -376,7 +376,7 @@ Unreferenced_Function19b8:
 	pop af
 	cp -1
 	ret z
-	cp $d
+	cp NUM_OBJECT_STRUCTS
 	ret nc
 	ld b, a
 	ld a, [wObjectFollow_Leader]
@@ -410,7 +410,7 @@ LoadMovementDataPointer::
 
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
-	ld [hl], STEP_TYPE_00
+	ld [hl], STEP_TYPE_RESET
 
 	ld hl, wVramState
 	set 7, [hl]
@@ -574,12 +574,12 @@ _GetMovementByte::
 	ld a, h
 	ret
 
-SetVramState_Bit0::
+SetVramState_Bit0:: ; unreferenced
 	ld hl, wVramState
 	set 0, [hl]
 	ret
 
-ResetVramState_Bit0::
+ResetVramState_Bit0:: ; unreferenced
 	ld hl, wVramState
 	res 0, [hl]
 	ret
@@ -589,7 +589,7 @@ UpdateSprites::
 	bit 0, a
 	ret z
 
-	farcall Function55e0
+	farcall UpdateAllObjectsFrozen
 	farcall _UpdateSprites
 	ret
 

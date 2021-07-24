@@ -4,7 +4,7 @@
 ## Questions
 
 - [What is pokecrystal11.gbc?](#what-is-pokecrystal11gbc)
-- [What is pokecrystal-au.gbc?](#what-is-pokecrystal-augbc)
+- [What is pokecrystal_au.gbc?](#what-is-pokecrystal_augbc)
 - [I can't build the ROM, `make` just prints an error!](#i-cant-build-the-rom-make-just-prints-an-error)
   - [`gcc`: command not found](#gcc-command-not-found)
   - ["ERROR: `UNION` already defined"](#error-union-already-defined)
@@ -25,9 +25,10 @@
 
 Version 1.1 of Pokémon Crystal, which fixed some issues with the initial international release. `make crystal11` defines `_CRYSTAL11` so the assembly builds the changed version.
 
-## What is pokecrystal-au.gbc?
 
-The Australian release of Pokémon Crystal, which is based on the international 1.1 release but censors gambling references from the Game Corners. `make crystal-au` defines `_CRYSTAL11` and `_CRYSTAL_AU` so the assembly builds the changed version.
+## What is pokecrystal_au.gbc?
+
+The Australian release of Pokémon Crystal, which is based on the international 1.1 release but censors gambling references from the Game Corners. `make crystal_au` defines `_CRYSTAL11` and `_CRYSTAL_AU` so the assembly builds the changed version.
 
 
 ## I can't build the ROM, `make` just prints an error!
@@ -40,15 +41,15 @@ You need to install `gcc`. If you're using Cygwin, re-run its setup, and at "Sel
 
 ### "ERROR: `UNION` already defined"
 
-Download [**rgbds 0.4.0**][rgbds] or newer. Older versions will not work.
+Download [**rgbds 0.5.1**][rgbds] or newer. Older versions will not work.
 
 ### "ERROR: Macro not defined"
 
-Download [**rgbds 0.4.0**][rgbds] or newer. Older versions will not work.
+Download [**rgbds 0.5.1**][rgbds] or newer. Older versions will not work.
 
 ### "Expression must be 8-bit"
 
-Download [**rgbds 0.4.0**][rgbds] or newer. Older versions will not work.
+Download [**rgbds 0.5.1**][rgbds] or newer. Older versions will not work.
 
 ### "Segmentation fault" from `rgbgfx`
 
@@ -80,7 +81,7 @@ For `asm` scripts, read [docs/map_event_scripts.md](https://pret.github.io/pokec
 
 Most `.png` images are paletted PNGs. You can edit these with any program that supports creating PNGs with palette information. These palettes should consist of exactly 4 colors. Additionally, for Pokémon images, the first color should be white, and the last black. Tools such as Paint and [GIMP](gimp) will do the right job, while other tools such as [paint.net](paintdotnet) or Photoshop might mess it up and output palettes of 255 colors even though only using 4. You may try using tools like [GraphicsGale](graphicsgale) or [IrfanView](irfanview) to fix this, or sometimes resaving the image in Paint seems to help.
 
-Some image `.png` files are greyscale. This indicates that even though these images do have proper colors in-game, they're shared with something else, and as such changing them will affect other things as well. Don't try opening the `.2bpp` files, these only contain the image data as well, not the palettes.
+Some image `.png` files are grayscale. This indicates that even though these images do have proper colors in-game, they're shared with something else, and as such changing them will affect other things as well. Don't try opening the `.2bpp` files, these only contain the image data as well, not the palettes.
 
 It really depends on what image you're trying to change the colors of, where these colors are specified. Try looking for related files or `.pal` files.
 
@@ -106,7 +107,7 @@ If your code is on GitHub, you can [link to specific lines][snippethelp]. Put "`
 Try asking on Discord or IRC (see [README.md](README.md)).
 
 [cygwin]: https://cygwin.com/install.html
-[rgbds]: https://github.com/rednex/rgbds/releases
+[rgbds]: https://github.com/gbdev/rgbds/releases
 [polished-map]: https://github.com/Rangi42/polished-map
 [gimp]: https://www.gimp.org/
 [paintdotnet]: https://www.getpaint.net/

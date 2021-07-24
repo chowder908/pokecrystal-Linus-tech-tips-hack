@@ -27,7 +27,7 @@ BattleCommand_Conversion2:
 
 .loop
 	call BattleRandom
-	maskbits NUM_TYPES
+	maskbits TYPES_END
 	cp UNUSED_TYPES
 	jr c, .okay
 	cp UNUSED_TYPES_END
@@ -55,7 +55,7 @@ BattleCommand_Conversion2:
 	call BattleCommand_SwitchTurn
 
 	ld a, [hl]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	predef GetTypeName
 	ld hl, TransformedTypeText
 	jp StdBattleTextbox

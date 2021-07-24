@@ -25,6 +25,10 @@ percent EQUS "* $ff / 100"
 ; e.g. 1 out_of 2 == 50 percent + 1 == $80
 out_of EQUS "* $100 /"
 
+assert_power_of_2: MACRO
+	assert (\1) & ((\1) - 1) == 0, "\1 must be a power of 2"
+ENDM
+
 ; Constant data (db, dw, dl) macros
 
 dwb: MACRO
@@ -35,21 +39,6 @@ ENDM
 dbw: MACRO
 	db \1
 	dw \2
-ENDM
-
-dbbw: MACRO
-	db \1, \2
-	dw \3
-ENDM
-
-dbww: MACRO
-	db \1
-	dw \2, \3
-ENDM
-
-dbwww: MACRO
-	db \1
-	dw \2, \3, \4
 ENDM
 
 dn: MACRO ; nybbles
@@ -66,24 +55,16 @@ rept _NARG / 4
 endr
 ENDM
 
-dx: MACRO
-x = 8 * ((\1) - 1)
-rept \1
-	db ((\2) >> x) & $ff
-x = x - 8
-endr
-ENDM
-
 dt: MACRO ; three-byte (big-endian)
-	dx 3, \1
+	db LOW((\1) >> 16), HIGH(\1), LOW(\1)
 ENDM
 
 dd: MACRO ; four-byte (big-endian)
-	dx 4, \1
+	db HIGH((\1) >> 16), LOW((\1) >> 16), HIGH(\1), LOW(\1)
 ENDM
 
 bigdw: MACRO ; big-endian word
-	dx 2, \1 ; db HIGH(\1), LOW(\1)
+	db HIGH(\1), LOW(\1)
 ENDM
 
 dba: MACRO ; dbw bank, address

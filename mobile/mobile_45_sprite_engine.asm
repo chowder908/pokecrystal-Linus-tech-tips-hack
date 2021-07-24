@@ -103,7 +103,7 @@ Function115e2b:
 	ld a, [wc30b]
 	sla a
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [hli]
 	cp $ff
@@ -354,16 +354,7 @@ Function11619d:
 	ret
 
 Function1161b8:
-	ld a, [wc319]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .Jumptable, wc319
 
 .Jumptable:
 	dw Function1161d5
@@ -484,7 +475,7 @@ Function1161d5:
 	ld [wc319], a
 	ret
 
-MenuHeader_11628c:
+MenuHeader_11628c: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 6, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw NULL
@@ -668,7 +659,7 @@ Function1163c0:
 	ld bc, 16 * SPRITEOAMSTRUCT_LENGTH
 	call ByteFill
 	call DelayFrame
-	farcall Function14146
+	farcall _RefreshSprites
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	ldh a, [rSVBK]
@@ -686,7 +677,7 @@ Function1163c0:
 	ld a, $90
 	ldh [hWY], a
 	call UpdateSprites
-	farcall Function14157
+	farcall _ClearSprites
 	pop af
 	ldh [rSVBK], a
 	farcall ReloadMapPart

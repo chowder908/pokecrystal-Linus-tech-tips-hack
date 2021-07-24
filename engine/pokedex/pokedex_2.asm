@@ -86,7 +86,7 @@ DisplayDexEntry:
 	ld a, b
 	push af
 	hlcoord 9, 5
-	call FarString ; dex species
+	call PlaceFarString ; dex species
 	ld h, b
 	ld l, c
 	push de
@@ -113,7 +113,7 @@ DisplayDexEntry:
 	ld a, b
 	push af
 	push hl
-	call GetFarHalfword
+	call GetFarWord
 	ld d, l
 	ld e, h
 	pop hl
@@ -125,7 +125,7 @@ DisplayDexEntry:
 	push hl
 	push de
 ; Print the height, with two of the four digits in front of the decimal point
-	ld hl, sp+$0
+	ld hl, sp+0
 	ld d, h
 	ld e, l
 	hlcoord 12, 7
@@ -143,7 +143,7 @@ DisplayDexEntry:
 	inc hl
 	push hl
 	dec hl
-	call GetFarHalfword
+	call GetFarWord
 	ld d, l
 	ld e, h
 	ld a, e
@@ -151,7 +151,7 @@ DisplayDexEntry:
 	jr z, .skip_weight
 	push de
 ; Print the weight, with four of the five digits in front of the decimal point
-	ld hl, sp+$0
+	ld hl, sp+0
 	ld d, h
 	ld e, l
 	hlcoord 11, 9
@@ -182,7 +182,7 @@ DisplayDexEntry:
 	pop af
 	hlcoord 2, 11
 	push af
-	call FarString
+	call PlaceFarString
 	pop bc
 	ld a, [wPokedexStatus]
 	or a ; check for page 2
@@ -211,11 +211,10 @@ DisplayDexEntry:
 	inc de
 	pop af
 	hlcoord 2, 11
-	call FarString
+	call PlaceFarString
 	ret
 
-UnreferencedPOKeString:
-; unused
+POKeString: ; unreferenced
 	db "#@"
 
 GetDexEntryPointer:

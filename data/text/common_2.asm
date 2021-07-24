@@ -114,31 +114,31 @@ _ExpPointsText::
 	text " EXP. Points!"
 	prompt
 
-Text_GoMon::
+_GoMonText::
 	text "Go! @"
 	text_end
 
-Text_DoItMon::
+_DoItMonText::
 	text "Do it! @"
 	text_end
 
-Text_GoForItMon::
+_GoForItMonText::
 	text "Go for it,"
 	line "@"
 	text_end
 
-Text_YourFoesWeakGetmMon::
+_YourFoesWeakGetmMonText::
 	text "Your foe's weak!"
 	line "Get'm, @"
 	text_end
 
 _BattleMonNicknameText::
-	text_ram wBattleMonNick
+	text_ram wBattleMonNickname
 	text "!"
 	done
 
-Text_BattleMonNickComma::
-	text_ram wBattleMonNick
+_BattleMonNickCommaText::
+	text_ram wBattleMonNickname
 	text ",@"
 	text_end
 
@@ -260,32 +260,32 @@ _MysteryGiftSentHomeText::
 	text "'s home."
 	prompt
 
-_MysteryGiftReceivedCardText::
+_NameCardReceivedCardText::
 	text "Received"
 	line "@"
-	text_ram wc850
+	text_ram wMysteryGiftCardHolderName
 	text "'s CARD."
 	prompt
 
-_MysteryGiftListedCardText::
-	text_ram wc850
+_NameCardListedCardText::
+	text_ram wMysteryGiftCardHolderName
 	text "'s CARD was"
 	line "listed as no.@"
-	text_decimal wDeciramBuffer, 1, 2
+	text_decimal wTextDecimalByte, 1, 2
 	text "."
 	prompt
 
-_MysteryGiftNotRegisteredCardText::
+_NameCardNotRegisteredCardText::
 	text "The CARD was not"
 	line "registered."
 	prompt
 
-_MysteryGiftLinkCancelledText::
+_NameCardLinkCancelledText::
 	text "The link has been"
 	line "cancelled."
 	prompt
 
-_MysteryGiftLinkCommErrorText::
+_NameCardLinkCommErrorText::
 	text "Communication"
 	line "error."
 	prompt
@@ -317,7 +317,7 @@ _BlindingFlashText::
 	text_promptbutton
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _UsedSurfText::
 	text_ram wStringBuffer2
@@ -487,7 +487,6 @@ _RodNothingText::
 	text "Not even a nibble!"
 	prompt
 
-; unused
 _UnusedNothingHereText::
 	text "Looks like there's"
 	line "nothing here."
@@ -610,7 +609,7 @@ _AskThrowAwayText::
 
 _AskQuantityThrowAwayText::
 	text "Throw away @"
-	text_decimal wItemQuantityChangeBuffer, 1, 2
+	text_decimal wItemQuantityChange, 1, 2
 	text_start
 	line "@"
 	text_ram wStringBuffer2
@@ -672,7 +671,7 @@ Text_BattleEffectActivate::
 	text_ram wStringBuffer2
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _BattleStatWentWayUpText::
 	text_pause
@@ -689,7 +688,7 @@ Text_BattleFoeEffectActivate::
 	text_ram wStringBuffer2
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _BattleStatSharplyFellText::
 	text_pause
@@ -757,7 +756,7 @@ _MoveNameText::
 	text_ram wStringBuffer2
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _EndUsedMove1Text::
 	text "!"
@@ -797,7 +796,7 @@ _BreedEggHatchText::
 	text_promptbutton
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _BreedAskNicknameText::
 	text "Give a nickname to"
@@ -808,7 +807,7 @@ _BreedAskNicknameText::
 
 _LeftWithDayCareLadyText::
 	text "It's @"
-	text_ram wBreedMon2Nick
+	text_ram wBreedMon2Nickname
 	text_start
 	line "that was left with"
 	cont "the DAY-CARE LADY."
@@ -816,7 +815,7 @@ _LeftWithDayCareLadyText::
 
 _LeftWithDayCareManText::
 	text "It's @"
-	text_ram wBreedMon1Nick
+	text_ram wBreedMon1Nickname
 	text_start
 	line "that was left with"
 	cont "the DAY-CARE MAN."
@@ -889,18 +888,15 @@ _MailMovedFromBoxText::
 	line "from the MAILBOX."
 	prompt
 
-; unused
-_YesPromptText::
+_YesPromptText:: ; unreferenced
 	text "Yes"
 	prompt
 
-; unused
-_NoPromptText::
+_NoPromptText:: ; unreferenced
 	text "No"
 	prompt
 
-; unused
-_AnimationTypeText::
+_AnimationTypeText:: ; unreferenced
 	text_decimal wcf64, 1, 3
 	text " @"
 	text_ram wStringBuffer1
@@ -909,10 +905,9 @@ _AnimationTypeText::
 	text_ram wStringBuffer2
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
-; unused
-_MonNumberText::
+_MonNumberText:: ; unreferenced
 	text "#MON number?"
 	done
 
@@ -1058,7 +1053,7 @@ _KarpGuruRecordText::
 	text_promptbutton
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _LuckyNumberMatchPartyText::
 	text "Congratulations!"
@@ -1115,7 +1110,7 @@ _PlayersPCHowManyWithdrawText::
 
 _PlayersPCWithdrewItemsText::
 	text "Withdrew @"
-	text_decimal wItemQuantityChangeBuffer, 1, 2
+	text_decimal wItemQuantityChange, 1, 2
 	text_start
 	line "@"
 	text_ram wStringBuffer2
@@ -1138,7 +1133,7 @@ _PlayersPCHowManyDepositText::
 
 _PlayersPCDepositItemsText::
 	text "Deposited @"
-	text_decimal wItemQuantityChangeBuffer, 1, 2
+	text_decimal wItemQuantityChange, 1, 2
 	text_start
 	line "@"
 	text_ram wStringBuffer2
@@ -1352,8 +1347,7 @@ _OakPCText4::
 	line "OAK's PC closed."
 	done
 
-; unused
-_TrainerRankingExplanationText::
+_TrainerRankingExplanationText:: ; unreferenced
 	text "Triple-theme"
 	line "trainer ranking!"
 
@@ -1364,8 +1358,7 @@ _TrainerRankingExplanationText::
 	para ""
 	done
 
-; unused
-_TrainerRankingNoDataText::
+_TrainerRankingNoDataText:: ; unreferenced
 	text "There is no"
 	line "ranking data."
 
@@ -1375,11 +1368,11 @@ _TrainerRankingNoDataText::
 	para ""
 	done
 
-_DummyGameYeahText::
+_MemoryGameYeahText::
 	text " , yeah!"
 	done
 
-_DummyGameDarnText::
+_MemoryGameDarnText::
 	text "Darn…"
 	done
 
@@ -1397,7 +1390,7 @@ _ItemsTossOutHowManyText::
 
 _ItemsThrowAwayText::
 	text "Throw away @"
-	text_decimal wItemQuantityChangeBuffer, 1, 2
+	text_decimal wItemQuantityChange, 1, 2
 	text_start
 	line "@"
 	text_ram wStringBuffer2
@@ -1554,7 +1547,7 @@ _OakText3::
 	text_promptbutton
 	text_end
 
-	text_end ; unused
+	text_end ; unreferenced
 
 _OakText4::
 	text "People and #MON"

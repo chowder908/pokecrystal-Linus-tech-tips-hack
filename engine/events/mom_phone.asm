@@ -146,7 +146,7 @@ Mom_GiveItemOrDoll:
 	ld a, [hl]
 	ld [wCurItem], a
 	ld a, 1
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	ld hl, wNumPCItems
 	call ReceiveItem
 	ret
@@ -204,8 +204,6 @@ endr
 
 INCLUDE "data/items/mom_phone.asm"
 
-	db 0, 0, 0 ; unused
-
 MomHiHowAreYouText:
 	text_far _MomHiHowAreYouText
 	text_end
@@ -230,9 +228,12 @@ MomItsInYourRoomText:
 	text_far _MomItsInYourRoomText
 	text_end
 
-	db 0 ; unused
+
+DummyPredef3A_DummyData: ; unreferenced
+	db 0
 
 DummyPredef3A:
 	ret
 
-	ret ; unused
+DummyPredef3A_DummyFunction: ; unreferenced
+	ret

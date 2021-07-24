@@ -14,8 +14,8 @@ _UnownPuzzle:
 	xor a
 	ldh [hBGMapMode], a
 	call DisableLCD
-	ld hl, wUnownPuzzle ; includes wPuzzlePieces
-	ld bc, wUnownPuzzleEnd - wUnownPuzzle
+	ld hl, STARTOF("Miscellaneous") ; includes wPuzzlePieces
+	ld bc, SIZEOF("Miscellaneous")
 	xor a
 	call ByteFill
 	ld hl, UnownPuzzleCursorGFX
@@ -97,7 +97,7 @@ InitUnownPuzzlePiecePositions:
 	and $f
 	ld hl, .PuzzlePieceInitialPositions
 	ld e, a
-	ld d, $0
+	ld d, 0
 	add hl, de
 	ld e, [hl]
 	ld hl, wPuzzlePieces
@@ -169,18 +169,9 @@ PlaceStartCancelBoxBorder:
 	ret
 
 UnownPuzzleJumptable:
-	ld a, [wJumptableIndex]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .Jumptable, wJumptableIndex
 
-.Jumptable:
+.Jumptable: ; redundant one-entry jumptable
 	dw .Function
 
 .Function:
@@ -458,7 +449,7 @@ UnownPuzzle_CheckCurrentTileOccupancy:
 	ld hl, wPuzzlePieces
 	ld a, [wUnownPuzzleCursorPosition]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	add hl, de
 	ld a, [hl]
 	ret
@@ -513,13 +504,13 @@ CheckSolvedUnownPuzzle:
 
 RedrawUnownPuzzlePieces:
 	call GetCurrentPuzzlePieceVTileCorner
-	ld [wd002], a
+	ld [wUnownPuzzleCornerTile], a
 	xor a
 	call GetUnownPuzzleCoordData ; get pixel positions
 	ld a, [hli]
 	ld b, [hl]
 	ld c, a
-	ld a, [wd002]
+	ld a, [wUnownPuzzleCornerTile]
 	cp $e0
 	jr z, .NoPiece
 	ld hl, .OAM_HoldingPiece
@@ -541,7 +532,7 @@ RedrawUnownPuzzlePieces:
 	add c
 	ld [de], a ; x
 	inc de
-	ld a, [wd002]
+	ld a, [wUnownPuzzleCornerTile]
 	add [hl]
 	ld [de], a ; tile id
 	inc hl
@@ -730,10 +721,8 @@ ConvertLoadedPuzzlePieces:
 	ret
 
 .EnlargedTiles:
-x = 0
-rept 16
+for x, 16
 	db ((x & %1000) * %11000) + ((x & %0100) * %1100) + ((x & %0010) * %110) + ((x & %0001) * %11)
-x = x + 1
 endr
 
 UnownPuzzle_AddPuzzlePieceBorders:

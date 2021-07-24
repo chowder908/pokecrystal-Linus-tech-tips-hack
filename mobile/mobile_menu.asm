@@ -108,24 +108,20 @@ MobileString1:
 	db   "@"
 
 MobileStrings2:
-
+; string 0
 String_0x49fe9:
 	db   "めいし¯つくったり"
 	next "ほぞんしておける　フォルダーです@"
-
-String_0x4a004:
+; string 1
 	db   "モバイルたいせんや　じぶんのめいしで"
 	next "つかう　あいさつ¯つくります@"
-
-String_0x4a026:
+; string 2
 	db   "あなた<NO>じゅうしょや　ねんれいの"
 	next "せ<TTE>い¯かえられます@"
-
-String_0x4a042:
+; string 3
 	db  "モバイルセンター<NI>せつぞくするとき"
 	next "ひつような　こと¯きめます@"
-
-String_0x4a062:
+; string 4
 	db   "まえ<NO>がめん　<NI>もどります"
 	next "@"
 
@@ -180,7 +176,7 @@ Function4a0c2:
 	ld a, 2
 	call MenuClickSound
 	ld a, BANK(sPlayerData)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sPlayerData + wPlayerName - wPlayerData
 	ld de, wPlayerName
 	ld bc, NAME_LENGTH_JAPANESE
@@ -378,7 +374,7 @@ Function4a28a:
 	call WaitBGMap
 	call LoadStandardMenuHeader
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [$aa4b]
 	call CloseSRAM
 	and a
@@ -429,7 +425,7 @@ Function4a28a:
 	cp $2
 	jr z, .dont_delete_password
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sMobileLoginPassword
 	xor a
 	ld bc, MOBILE_LOGIN_PASSWORD_LENGTH
@@ -446,7 +442,7 @@ Function4a28a:
 	xor a
 	ret
 
-MenuHeader_0x4a346:
+MenuHeader_0x4a346: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 12, 0, SCREEN_WIDTH - 1, 6
 
@@ -502,7 +498,7 @@ Function4a373:
 	ld [hli], a
 	ret
 
-Function4a39a:
+Function4a39a: ; unreferenced
 	call Function4a485
 	call Function4a492
 	call Function4a3aa
@@ -574,7 +570,7 @@ Function4a3aa:
 	call Function4a6d8
 	ret
 
-Function4a449:
+Function4a449: ; unreferenced
 	ld bc, 3 * SCREEN_WIDTH
 	ld a, $0
 	hlcoord 0, 0
@@ -607,7 +603,7 @@ Function4a485:
 	ret
 
 Function4a492:
-	call MG_Mobile_Layout00
+	call _CrystalCGB_MobileLayout0
 	ret
 
 MainMenu_MobileStudium:
@@ -844,3 +840,9 @@ Function4a6d8:
 	dec b
 	jr nz, Function4a6d8
 	ret
+
+if DEF(_DEBUG)
+MainMenu_DebugRoom:
+	farcall _DebugRoom
+	ret
+endc

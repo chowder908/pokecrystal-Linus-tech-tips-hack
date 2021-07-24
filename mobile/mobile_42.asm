@@ -1,3 +1,12 @@
+add_mobiletradeanim: MACRO
+\1_MobileTradeCmd:
+	dw \1
+ENDM
+
+mobiletradeanim: MACRO
+	db (\1_MobileTradeCmd - MobileTradeAnim_JumptableLoop.Jumptable) / 2
+ENDM
+
 MobileTradeAnimation_SendGivemonToGTS:
 	ld a, $80
 	ld [wcf65], a
@@ -5,13 +14,13 @@ MobileTradeAnimation_SendGivemonToGTS:
 	jp RunMobileTradeAnim_NoFrontpics
 
 .TradeAnimScript:
-	mobiletradeanim_showgtsgivemon
-	mobiletradeanim_12
-	mobiletradeanim_10
-	mobiletradeanim_sendmon
-	mobiletradeanim_06
-	mobiletradeanim_0f
-	mobiletradeanim_end
+	mobiletradeanim MobileTradeAnim_ShowPlayerMonForGTS
+	mobiletradeanim MobileTradeAnim_FadeToBlack
+	mobiletradeanim MobileTradeAnim_10
+	mobiletradeanim MobileTradeAnim_GiveTrademon1
+	mobiletradeanim MobileTradeAnim_06
+	mobiletradeanim MobileTradeAnim_0f
+	mobiletradeanim EndMobileTradeAnim
 
 MobileTradeAnimation_RetrieveGivemonFromGTS:
 	ld a, $80
@@ -25,11 +34,11 @@ asm_108018:
 	jp RunMobileTradeAnim_NoFrontpics
 
 .TradeAnimScript:
-	mobiletradeanim_11
-	mobiletradeanim_07
-	mobiletradeanim_receivemon
-	mobiletradeanim_showgtsgetmon
-	mobiletradeanim_end
+	mobiletradeanim MobileTradeAnim_11
+	mobiletradeanim MobileTradeAnim_07
+	mobiletradeanim MobileTradeAnim_GetTrademon1
+	mobiletradeanim MobileTradeAnim_ShowOTMonFromGTS
+	mobiletradeanim EndMobileTradeAnim
 
 Function108026:
 	ld a, $0
@@ -44,14 +53,14 @@ asm_10802c:
 	jp RunMobileTradeAnim_Frontpics
 
 .TradeAnimScript: ; trade
-	mobiletradeanim_showgivemon
-	mobiletradeanim_12
-	mobiletradeanim_02
-	mobiletradeanim_sendmon
-	mobiletradeanim_05
-	mobiletradeanim_receivemon
-	mobiletradeanim_showgetmon
-	mobiletradeanim_end
+	mobiletradeanim MobileTradeAnim_ShowPlayerMonToBeSent
+	mobiletradeanim MobileTradeAnim_FadeToBlack
+	mobiletradeanim MobileTradeAnim_02
+	mobiletradeanim MobileTradeAnim_GiveTrademon1
+	mobiletradeanim MobileTradeAnim_05
+	mobiletradeanim MobileTradeAnim_GetTrademon1
+	mobiletradeanim MobileTradeAnim_ShowOTMonFromTrade
+	mobiletradeanim EndMobileTradeAnim
 
 Function10803d:
 	ld a, $0
@@ -60,11 +69,11 @@ Function10803d:
 	jp RunMobileTradeAnim_NoFrontpics
 
 .TradeAnimScript:
-	mobiletradeanim_11
-	mobiletradeanim_07
-	mobiletradeanim_receivemon
-	mobiletradeanim_showoddegg
-	mobiletradeanim_end
+	mobiletradeanim MobileTradeAnim_11
+	mobiletradeanim MobileTradeAnim_07
+	mobiletradeanim MobileTradeAnim_GetTrademon1
+	mobiletradeanim MobileTradeAnim_GetOddEgg
+	mobiletradeanim EndMobileTradeAnim
 
 Function10804d:
 	ld a, $0
@@ -73,9 +82,9 @@ Function10804d:
 	jp RunMobileTradeAnim_NoFrontpics
 
 .TradeAnimScript:
-	mobiletradeanim_11
-	mobiletradeanim_showgtsgetmon
-	mobiletradeanim_end
+	mobiletradeanim MobileTradeAnim_11
+	mobiletradeanim MobileTradeAnim_ShowOTMonFromGTS
+	mobiletradeanim EndMobileTradeAnim
 
 RunMobileTradeAnim_Frontpics:
 	ld hl, wTradeAnimAddress
@@ -182,10 +191,10 @@ Function1080b7:
 	lb bc, BANK(TradePoofGFX), 12
 	call Request2bpp
 
-	xor a
+	xor a ; SPRITE_ANIM_DICT_DEFAULT
 	ld hl, wSpriteAnimDict
 	ld [hli], a
-	ld [hl], $0
+	ld [hl], $00
 
 	ld a, [wPlayerTrademonSpecies]
 	ld hl, wPlayerTrademonDVs
@@ -230,10 +239,10 @@ Function108157:
 	ld a, $90
 	ldh [hWY], a
 	farcall ClearSpriteAnims
-	xor a
+	xor a ; SPRITE_ANIM_DICT_DEFAULT
 	ld hl, wSpriteAnimDict
 	ld [hli], a
-	ld [hl], $0
+	ld [hl], $00
 	call DelayFrame
 	ld a, [wPlayerTrademonSpecies]
 	ld de, wPlayerTrademonSpeciesName
@@ -300,7 +309,7 @@ Function108201:
 	predef GetAnimatedFrontpic
 	ret
 
-Function108219:
+Function108219: ; unreferenced
 	ld [wCurPartySpecies], a
 	hlcoord 7, 2
 	ld d, $0
@@ -318,7 +327,7 @@ Function108229:
 
 MobileTradeAnim_InitSpeciesName:
 	push de
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, wStringBuffer1
 	pop de
@@ -351,38 +360,29 @@ MobileTradeAnim_JumptableLoop:
 	ret
 
 .ExecuteMobileTradeAnimCommand:
-	ld a, [wJumptableIndex]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .Jumptable, wJumptableIndex
 
 .Jumptable:
-	dw GetMobileTradeAnimByte ; 00
-	dw MobileTradeAnim_ShowPlayerMonToBeSent ; 01
-	dw MobileTradeAnim_02 ; 02
-	dw MobileTradeAnim_GiveTrademon1 ; 03
-	dw MobileTradeAnim_GiveTrademon2 ; 04
-	dw MobileTradeAnim_05 ; 05
-	dw MobileTradeAnim_06 ; 06
-	dw MobileTradeAnim_07 ; 07
-	dw MobileTradeAnim_GetTrademon1 ; 08
-	dw MobileTradeAnim_GetTrademon2 ; 09
-	dw MobileTradeAnim_GetTrademon3 ; 0a
-	dw MobileTradeAnim_ShowOTMonFromTrade ; 0b
-	dw EndMobileTradeAnim ; 0c
-	dw MobileTradeAnim_ShowPlayerMonForGTS ; 0d
-	dw MobileTradeAnim_ShowOTMonFromGTS ; 0e
-	dw MobileTradeAnim_0f ; 0f
-	dw MobileTradeAnim_10 ; 10
-	dw MobileTradeAnim_11 ; 11
-	dw MobileTradeAnim_FadeToBlack ; 12
-	dw MobileTradeAnim_GetOddEgg ; 13 get odd egg
+	add_mobiletradeanim GetMobileTradeAnimByte                ; 00
+	add_mobiletradeanim MobileTradeAnim_ShowPlayerMonToBeSent ; 01
+	add_mobiletradeanim MobileTradeAnim_02                    ; 02
+	add_mobiletradeanim MobileTradeAnim_GiveTrademon1         ; 03
+	add_mobiletradeanim MobileTradeAnim_GiveTrademon2         ; 04
+	add_mobiletradeanim MobileTradeAnim_05                    ; 05
+	add_mobiletradeanim MobileTradeAnim_06                    ; 06
+	add_mobiletradeanim MobileTradeAnim_07                    ; 07
+	add_mobiletradeanim MobileTradeAnim_GetTrademon1          ; 08
+	add_mobiletradeanim MobileTradeAnim_GetTrademon2          ; 09
+	add_mobiletradeanim MobileTradeAnim_GetTrademon3          ; 0a
+	add_mobiletradeanim MobileTradeAnim_ShowOTMonFromTrade    ; 0b
+	add_mobiletradeanim EndMobileTradeAnim                    ; 0c
+	add_mobiletradeanim MobileTradeAnim_ShowPlayerMonForGTS   ; 0d
+	add_mobiletradeanim MobileTradeAnim_ShowOTMonFromGTS      ; 0e
+	add_mobiletradeanim MobileTradeAnim_0f                    ; 0f
+	add_mobiletradeanim MobileTradeAnim_10                    ; 10
+	add_mobiletradeanim MobileTradeAnim_11                    ; 11
+	add_mobiletradeanim MobileTradeAnim_FadeToBlack           ; 12
+	add_mobiletradeanim MobileTradeAnim_GetOddEgg             ; 13 get odd egg
 
 MobileTradeAnim_Next:
 	ld hl, wJumptableIndex
@@ -1186,7 +1186,7 @@ Function108963:
 asm_108966:
 	call DelayFrame
 	ld hl, vTiles2
-	lb bc, $a, $31 ; $a is the bank of ?????
+	lb bc, BANK(TradeGameBoyLZ), $31
 	call Request2bpp
 	call WaitTop
 	call MobileTradeAnim_ClearTilemap
@@ -1374,7 +1374,7 @@ Function108ad4:
 	ldh [rVBK], a
 	ld hl, vTiles2 tile $4a
 	lb bc, BANK(MobileCable1GFX), 16 ; aka BANK(MobileCable2GFX)
-	call Get2bpp_2
+	call Get2bppViaHDMA
 	call DelayFrame
 	ld a, $0
 	ldh [rVBK], a
@@ -1450,7 +1450,7 @@ Function108b5a:
 	jr nz, .loop
 	pop af
 	ldh [rSVBK], a
-	ld a, $1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
 
@@ -1474,7 +1474,7 @@ Function108b78:
 	ld [hld], a
 	pop af
 	ldh [rSVBK], a
-	ld a, $1
+	ld a, TRUE 
 	ldh [hCGBPalUpdate], a
 	ret
 
@@ -1509,7 +1509,7 @@ MobileTradeAnim_DeleteSprites:
 	call ClearSprites
 	ret
 
-Function108bc7:
+MobileTradeAnim_AnimateSentPulse:
 	ld a, [wcf64]
 	and a
 	ret z
@@ -1526,7 +1526,7 @@ Function108bc7:
 	farcall DeinitializeSprite
 	ret
 
-Function108be0:
+MobileTradeAnim_AnimateOTPulse:
 	ld hl, SPRITEANIMSTRUCT_YCOORD
 	add hl, bc
 	ld a, [hl]
@@ -1557,7 +1557,7 @@ Function108bec:
 	text_far _MobileForPartnersMonText
 	text_end
 
-.MobilePlayersMonTradeText:
+.MobilePlayersMonTradeText: ; unreferenced
 	text_far _MobilePlayersMonTradeText
 	text_end
 
@@ -1636,7 +1636,7 @@ Function108c80:
 	ldh [rVBK], a
 	ret
 
-DebugMobileTrade:
+DebugMobileTrade: ; unreferenced
 ; localization error: NAME_LENGTH (11) should be NAME_LENGTH_JAPANESE (6) here
 
 	ld hl, .DebugTradeData
@@ -1741,7 +1741,7 @@ INCBIN "gfx/mobile/mobile_trade.tilemap.lz"
 MobileTradeAttrmapLZ:
 INCBIN "gfx/mobile/mobile_trade.attrmap.lz"
 
-UnusedMobilePulsePalettes:
+UnusedMobilePulsePalettes: ; unreferenced
 INCLUDE "gfx/mobile/unused_mobile_pulses.pal"
 
 MobileTradeBGPalettes:

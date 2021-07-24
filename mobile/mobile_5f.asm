@@ -302,7 +302,7 @@ Function17d0f3:
 	ld [wLinkMode], a
 	farcall SaveAfterLinkTrade
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $5
 	ld [$a800], a
 	call CloseSRAM
@@ -508,7 +508,7 @@ Function17d2c0:
 
 Function17d2ce:
 	ld a, BANK(s5_aa72)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [s5_aa72]
 	call CloseSRAM
 	and a
@@ -543,13 +543,13 @@ Function17d2ce:
 
 Function17d314:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [$b1b1]
 	call CloseSRAM
 	cp $21
 	jr nc, .asm_17d354
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld l, $0
 	ld h, l
 	ld de, $a006
@@ -562,7 +562,7 @@ Function17d314:
 	ld a, [de]
 	inc de
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	pop bc
 	dec bc
@@ -582,7 +582,7 @@ Function17d314:
 .asm_17d354
 	call CloseSRAM
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld hl, $aa73
 	ld bc, $c
@@ -636,7 +636,7 @@ Function17d370:
 	ld a, $d0
 	ld [wcd21], a
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $a006
 	ld de, wBGPals1
 	ld bc, $1000
@@ -876,7 +876,7 @@ Function17d48d:
 	ld [wcd4a], a
 	ld a, [wcd42]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	add hl, bc
 	ld a, l
@@ -948,7 +948,7 @@ Function17d5f6:
 
 Function17d60b:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $b1d3
 	ld de, wc608
 	ld bc, $20
@@ -963,7 +963,7 @@ Function17d60b:
 	ld h, a
 	call CloseSRAM
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld de, wc708
 	ld a, c
 	and a
@@ -1023,7 +1023,7 @@ Function17d60b:
 .asm_17d684
 	call CloseSRAM
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wc708
 	ld de, $b1b3
 	ld a, [$b1b1]
@@ -1038,9 +1038,9 @@ Function17d6a1:
 	push hl
 	ld a, [wcd6e]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $b1d3
 	add hl, bc
 	add hl, bc
@@ -1058,7 +1058,7 @@ Function17d6a1:
 	ld l, c
 	call CloseSRAM
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, l
 	ld [wcd5e], a
 	ld a, h
@@ -1177,7 +1177,7 @@ Function17d78d:
 	ld b, a
 	call HlToCrashCheckPointer
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $a006
 	add hl, bc
 	ld de, wBGPals1
@@ -1193,7 +1193,7 @@ Function17d7b4:
 	call IncCrashCheckPointer
 	ld a, [hli]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	call PlayMusic2
 	call HlToCrashCheckPointer
 	ret
@@ -1202,7 +1202,7 @@ Function17d7c2:
 	call IncCrashCheckPointer
 	ld a, [hli]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	call PlaySFX
 	call WaitSFX
 	call HlToCrashCheckPointer
@@ -1213,7 +1213,7 @@ Function17d7d3:
 	ld a, [hli]
 	dec a
 	ld e, a
-	ld d, $0
+	ld d, 0
 	call PlayCry
 	call WaitSFX
 	call HlToCrashCheckPointer
@@ -1330,7 +1330,7 @@ Function17d85d:
 
 .asm_17d89b
 	ld a, [wcd4f]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17d8a1
 	push hl
@@ -1511,7 +1511,7 @@ Function17d9e3:
 
 .asm_17da01
 	ld a, [wc70c]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17da07
 	ld a, [wc708]
@@ -1556,7 +1556,7 @@ Function17da31:
 
 .asm_17da4f
 	ld a, [wc70a]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17da55
 	ld a, [wc708]
@@ -1580,7 +1580,7 @@ Function17da31:
 	ld a, c
 	and $7f
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	and [hl]
@@ -1601,17 +1601,13 @@ Function17da31:
 	ret
 
 Unknown_17da8c:
-x = 0
-rept 8
+for x, 8
 	db 1 << x
-x = x + 1
 endr
 
 Unknown_17da94:
-x = 0
-rept 8
+for x, 8
 	db $ff ^ (1 << x)
-x = x + 1
 endr
 
 Function17da9c:
@@ -1882,7 +1878,7 @@ Function17dc1f:
 	call Function17e40f
 	ret
 
-MenuData_17dc96:
+MenuData_17dc96: ; unreferenced
 	db STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING | STATICMENU_WRAP ; flags
 	db 2
 	db "はい@"
@@ -1928,7 +1924,7 @@ Function17dccf:
 	ld h, a
 	ld a, [wcd2e]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	add hl, bc
 	ld a, [hli]
@@ -1993,7 +1989,7 @@ Function17dd30:
 	ld d, a
 	ld a, [hli]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, [hli]
 	push af
 	call HlToCrashCheckPointer
@@ -2010,7 +2006,7 @@ Function17dd49:
 	call CopyBytes
 	ld a, [wc711]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, [wc70a]
 	cp $c0
@@ -2021,7 +2017,7 @@ Function17dd49:
 
 .sram
 	ld a, [wc708]
-	call GetSRAMBank
+	call OpenSRAM
 
 .got_bank
 	ld a, [wc709]
@@ -2031,7 +2027,7 @@ Function17dd49:
 	ld de, wc688
 	ld a, [wc711]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, [wc70a]
 	cp $c0
@@ -2097,7 +2093,7 @@ Function17ddcd:
 
 .asm_17dde7
 	ld a, [wc708]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17dded
 	ld a, [wc709]
@@ -2108,7 +2104,7 @@ Function17ddcd:
 	ld [wc710], a
 	ld a, [wc70b]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, [wc70a]
 	cp $c0
 	jr c, .asm_17de0c
@@ -2151,10 +2147,10 @@ Function17de32:
 	call CopyBytes
 	ld a, [wc710]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	call Function17f4f6
 	ld a, [wc708]
 	ld e, a
@@ -2208,7 +2204,7 @@ Function17de91:
 	ld bc, $7
 	call CopyBytes
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	call Function17f4f6
 	ld a, [wc708]
 	ld e, a
@@ -2219,7 +2215,7 @@ Function17de91:
 	ld d, h
 	ld a, [wc70a]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, Unknown_17da8c
 	add hl, bc
 	ld a, [hl]
@@ -2299,7 +2295,7 @@ Function17ded9:
 	push hl
 	ld a, [wPartyCount]
 	dec a
-	ld hl, wPartyMonOT
+	ld hl, wPartyMonOTs
 	call SkipNames
 	ld d, h
 	ld e, l
@@ -2452,7 +2448,7 @@ Function17ded9:
 
 Function17e026:
 	ld a, BANK(sBoxCount)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sBoxCount]
 	call CloseSRAM
 	cp $14
@@ -2467,7 +2463,7 @@ Function17e026:
 	pop hl
 	pop bc
 	ld a, BANK(sBoxMonNicknames)
-	call GetSRAMBank
+	call OpenSRAM
 	bit 1, b
 	jr z, .asm_17e067
 	push bc
@@ -2486,7 +2482,7 @@ Function17e026:
 	jr z, .asm_17e08e
 	push bc
 	ld bc, $6
-	ld de, sBoxMonOT
+	ld de, sBoxMonOTs
 	call CopyBytes
 	ld a, [hli]
 	ld b, a
@@ -2494,7 +2490,7 @@ Function17e026:
 	call CloseSRAM
 	farcall SetGiftBoxMonCaughtData
 	ld a, $1
-	call GetSRAMBank
+	call OpenSRAM
 	pop hl
 	pop bc
 	jr .asm_17e092
@@ -2596,7 +2592,7 @@ Function17e0fd:
 	ld a, [hli]
 	ld [wCurItem], a
 	ld a, [hli]
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	push hl
 	ld hl, wNumItems
 	call ReceiveItem
@@ -2696,7 +2692,7 @@ Function17e1a1:
 
 .asm_17e1bb
 	ld a, [wc708]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17e1c1
 	ld a, [wc709]
@@ -2706,7 +2702,7 @@ Function17e1a1:
 	ld de, wc608
 	ld a, [wc70b]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, [wc70a]
 	cp $c0
@@ -2728,7 +2724,7 @@ Function17e1a1:
 
 .asm_17e1f3
 	ld a, [wc70c]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17e1f9
 	ld a, [wc70d]
@@ -2738,7 +2734,7 @@ Function17e1a1:
 	ld de, wc688
 	ld a, [wc70b]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, [wc70e]
 	cp $c0
@@ -2890,7 +2886,7 @@ Function17e2a7:
 	xor a
 	ld [wcd7a], a
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $aa73
 	ld de, $aa7f
 	ld bc, $c
@@ -2926,7 +2922,7 @@ Function17e309:
 
 Function17e32b:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wc608
 	ld de, $b0b1
 	ld bc, $40
@@ -2939,7 +2935,7 @@ Function17e32b:
 
 Function17e349:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $b0b1
 	ld de, wc608
 	ld bc, $40
@@ -3079,7 +3075,7 @@ Function17e451:
 	ld a, [wcd2f]
 	ld [wcd2e], a
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	add hl, bc
 	push hl
@@ -3089,7 +3085,7 @@ Function17e451:
 	call AddNTimes
 	ld a, [wCreditsTimer]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	pop bc
 	ld a, [wMobileCommsJumptableIndex]
@@ -3121,7 +3117,7 @@ Function17e451:
 	pop hl
 	ld a, [wcd26]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	add hl, de
 	ld a, [wcd2e]
 	inc a
@@ -3165,7 +3161,7 @@ Function17e4dd:
 	call AddNTimes
 	ld a, [wcd28]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [wcd2f]
 	and a
@@ -3203,7 +3199,7 @@ Function17e51b:
 	call AddNTimes
 	ld a, [wCreditsTimer]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [wMobileCommsJumptableIndex]
 	ld c, a
@@ -3214,7 +3210,7 @@ Function17e51b:
 	push hl
 	ld a, [wcd4f]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, $7f
 	call ByteFill
 	pop hl
@@ -3249,7 +3245,7 @@ Function17e571:
 	call AddNTimes
 	ld a, [wCreditsTimer]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	dec hl
 	push hl
@@ -3268,7 +3264,7 @@ Function17e571:
 	ld a, [wcd26]
 	call SimpleMultiply
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	pop bc
 	add hl, bc
@@ -3290,12 +3286,12 @@ Function17e5af:
 	add hl, bc
 	ld a, [wMobileInactivityTimerSeconds]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, [wMobileInactivityTimerFrames]
 	call Function17e600
 	ld a, [wcd2e]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld a, [wcd4d]
 	ld l, a
 	ld a, [wcd4e]
@@ -3357,7 +3353,7 @@ Function17e613:
 .asm_17e626
 	pop af
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	push hl
 	ld a, [wcd53]
@@ -3459,7 +3455,7 @@ Function17e691:
 .asm_17e6a5
 	pop af
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	dec de
@@ -3541,7 +3537,7 @@ INCLUDE "gfx/mobile/pokemon_news.pal"
 
 RunMobileScript::
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	inc de
 .loop
 	call _RunMobileScript
@@ -3607,7 +3603,7 @@ Function17f081:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3692,7 +3688,7 @@ Function17f0f8:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3721,7 +3717,7 @@ Function17f0f8:
 	ld de, wc608
 	ld a, [wcd56]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, "@"
 	ld [de], a
@@ -3789,7 +3785,7 @@ Function17f181:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3843,7 +3839,7 @@ Function17f1d0:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3871,7 +3867,7 @@ Function17f1d0:
 	ld a, [hl]
 	ld a, $1
 	ldh [rSVBK], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	pop hl
 	call PlaceString
@@ -3899,7 +3895,7 @@ Function17f220:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3962,7 +3958,7 @@ Function17f27b:
 	ld l, c
 	ld h, b
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [de]
 	cp "@"
@@ -3990,7 +3986,7 @@ Function17f27b:
 	ld a, [hl]
 	ld a, $1
 	ldh [rSVBK], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 	pop hl
 	call PlaceString
@@ -4082,13 +4078,13 @@ MobileScript_Prefecture:
 	bit 7, a
 	jr nz, .asm_17f355
 	ld a, BANK(sCrystalData)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sCrystalData + 2]
 	jr .asm_17f35d
 
 .asm_17f355
 	ld a, BANK(s5_b2f3)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [s5_b2f3]
 
 .asm_17f35d
@@ -4125,13 +4121,13 @@ Function17f382:
 	bit 7, a
 	jr nz, .asm_17f3a3
 	ld a, BANK(sCrystalData)
-	call GetSRAMBank
+	call OpenSRAM
 	ld de, sCrystalData + 3
 	jr .asm_17f3ab
 
 .asm_17f3a3
 	ld a, BANK(s5_b2f4)
-	call GetSRAMBank
+	call OpenSRAM
 	ld de, s5_b2f4
 
 .asm_17f3ab
@@ -4183,7 +4179,7 @@ Function17f3f0:
 	ld d, a
 	ld a, [de]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	add hl, bc
 	ld a, [hli]
@@ -4198,7 +4194,7 @@ Function17f3f0:
 	call PlaceString
 	pop af
 	ld e, a
-	ld d, $0
+	ld d, 0
 	pop hl
 	add hl, de
 	add hl, de
@@ -4299,7 +4295,7 @@ Function17f44f:
 
 .asm_17f488
 	ld a, [wcd54]
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17f48e
 	ld a, [wcd55]
@@ -4309,7 +4305,7 @@ Function17f44f:
 	ld de, wc608
 	ld a, [wcd57]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	call CopyBytes
 	ld a, [wcd56]
 	cp $c0
@@ -4321,7 +4317,7 @@ Function17f44f:
 .asm_17f4af
 	call CloseSRAM
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 
 .asm_17f4b7
 	ld de, wc608
@@ -4389,7 +4385,7 @@ Function17f50f:
 	and a
 	jr z, .asm_17f519
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld c, l
 	ld b, h
@@ -4491,7 +4487,7 @@ DisplayMobileError:
 
 .asm_17f5a1
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld [sMobileLoginPassword], a
 	call CloseSRAM
@@ -4562,7 +4558,7 @@ Function17f5e4:
 	cp $24
 	jr nc, .asm_17f679
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, MobileErrorCodeTable
 	add hl, de
 	add hl, de
@@ -4645,7 +4641,7 @@ Table_17f699:
 	dw MobileErrorCode_101_009_Text
 	dw MobileErrorCode_101_009_Text
 
-Palette_17f6af:
+Palette_17f6af: ; unreferenced
 	RGB  5,  5, 16
 	RGB  8, 19, 28
 	RGB  0,  0,  0
@@ -4678,7 +4674,7 @@ Function17f6b7:
 MobileCommunicationErrorText:
 	db "つうしんエラー　　　ー@"
 
-String_17f6e8:
+String_17f6e8: ; unreferenced
 	db   "みていぎ<NO>エラーです"
 	next "プログラム<WO>"
 	next "かくにん　してください"
@@ -5115,7 +5111,7 @@ MobileErrorCode_101_005_Text:
 	next "せつめいしょを　ごらんください"
 	db   "@"
 
-String_17fe9a: ; unused
+String_17fe9a: ; unreferenced
 ; Cannot send your save data because Pokémon News is being updated.
 ; Please send your save data after loading new Pokémon News.
 	db   "ポケモンニュースが"

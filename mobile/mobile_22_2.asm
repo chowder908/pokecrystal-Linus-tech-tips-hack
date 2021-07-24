@@ -32,7 +32,7 @@ Function8b342::
 .two
 	ret
 
-Function8b35d:
+Function8b35d: ; unreferenced
 	ld a, h
 	cp d
 	ret nz
@@ -40,7 +40,7 @@ Function8b35d:
 	cp e
 	ret
 
-Function8b363:
+Function8b363: ; unreferenced
 	push bc
 	farcall Mobile_AlwaysReturnNotCarry
 	pop bc
@@ -118,8 +118,8 @@ Function8b3a4:
 	ret
 
 Function8b3b0:
-	ld bc, $a037 ; 4:a037
-	ld a, [$a60b]
+	ld bc, s4_a037
+	ld a, [s4_a60b]
 	and a
 	jr z, .asm_8b3c2
 	cp $3
@@ -129,9 +129,9 @@ Function8b3b0:
 .asm_8b3c2
 	call Function8b36c
 	xor a
-	ld [$a60b], a
+	ld [s4_a60b], a
 .asm_8b3c9
-	ld a, [$a60b]
+	ld a, [s4_a60b]
 	ret
 
 Function8b3cd:
@@ -441,7 +441,7 @@ Function8b555:
 .strings_equal
 	call OpenSRAMBank4
 	ld hl, wd013
-	ld de, $a037 ; 4:a037
+	ld de, s4_a037
 	ld bc, $4
 	call CopyBytes
 	call CloseSRAM
@@ -498,7 +498,7 @@ Function8b5e7:
 	ld bc, wd013
 	call Function8b493
 	call OpenSRAMBank4
-	ld hl, $a037 ; 4:a037
+	ld hl, s4_a037
 	call Function8b3a4
 	call CloseSRAM
 	jr z, .asm_8b635
@@ -719,7 +719,7 @@ Function8b75d:
 	jr nz, .asm_8b780
 	jr Function8b79e
 
-Function8b787:
+Function8b787: ; unreferenced
 	ret
 
 Function8b788:
@@ -772,7 +772,7 @@ Function8b7bd:
 	ld hl, MenuHeader_0x8b867
 	call CopyMenuHeader
 	ld a, [wd030]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wd031]
 	ld [wMenuScrollPosition], a
 	ld a, [wd032]
@@ -848,7 +848,7 @@ Function8b83e:
 Function8b84b:
 	ld [wMenuScrollPosition], a
 	ld a, [wMenuCursorY]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ret
 
 Function8b855:
@@ -1019,7 +1019,7 @@ Function8b99f:
 	ld hl, wd002
 	dec a
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [hl]
 	cp $ff

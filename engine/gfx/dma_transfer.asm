@@ -108,11 +108,11 @@ Mobile_ReloadMapPart:
 
 	ret
 
-; unused
-	ld hl, .unreferenced_1040da
+Function1040d4: ; unreferenced
+	ld hl, .Function
 	jp CallInSafeGFXMode
 
-.unreferenced_1040da
+.Function
 	ld a, $1
 	ldh [rVBK], a
 	ld a, BANK(w3_d800)
@@ -131,11 +131,11 @@ Mobile_ReloadMapPart:
 	call WaitDMATransfer
 	ret
 
-; unused
-	ld hl, .unreferenced_104101
+Function1040fb: ; unreferenced
+	ld hl, .Function
 	jp CallInSafeGFXMode
 
-.unreferenced_104101
+.Function
 	ld a, $1
 	ldh [rVBK], a
 	ld a, BANK(w3_d800)
@@ -415,11 +415,11 @@ PadAttrmapForHDMATransfer:
 
 PadMapForHDMATransfer:
 ; pad a 20x18 map to 32x18 for HDMA transfer
-; back up the padding value in c to hMapObjectIndexBuffer
-	ldh a, [hMapObjectIndexBuffer]
+; back up the padding value in c to hMapObjectIndex
+	ldh a, [hMapObjectIndex]
 	push af
 	ld a, c
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 
 ; for each row on the screen
 	ld c, SCREEN_HEIGHT
@@ -435,7 +435,7 @@ PadMapForHDMATransfer:
 	jr nz, .loop2
 
 ; load the original padding value of c into hl for 32 - 20 = 12 rows
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	ld b, BG_MAP_WIDTH - SCREEN_WIDTH
 .loop3
 	ld [hli], a
@@ -445,12 +445,12 @@ PadMapForHDMATransfer:
 	dec c
 	jr nz, .loop1
 
-; restore the original value of hMapObjectIndexBuffer
+; restore the original value of hMapObjectIndex
 	pop af
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ret
 
-_Get2bpp::
+HDMATransfer2bpp::
 	; 2bpp when [rLCDC] & $80
 	; switch to WRAM bank 6
 	ldh a, [rSVBK]
@@ -494,7 +494,7 @@ _Get2bpp::
 	ldh [rSVBK], a
 	ret
 
-_Get1bpp::
+HDMATransfer1bpp::
 	; 1bpp when [rLCDC] & $80
 .loop
 	ld a, c

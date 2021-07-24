@@ -36,7 +36,7 @@ DisplayCaughtContestMonStats:
 	call PlaceString
 
 	ld a, [wContestMon]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld de, wStringBuffer1
 	hlcoord 1, 2
@@ -48,7 +48,7 @@ DisplayCaughtContestMonStats:
 	ld [wTempMonLevel], a
 	call PrintLevel
 
-	ld de, wEnemyMonNick
+	ld de, wEnemyMonNickname
 	hlcoord 1, 8
 	call PlaceString
 

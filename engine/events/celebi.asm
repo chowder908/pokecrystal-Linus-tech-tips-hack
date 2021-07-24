@@ -1,7 +1,10 @@
 SPECIALCELEBIEVENT_CELEBI EQU $84
 
-UnusedForestTreeFrames:
-INCBIN "gfx/tilesets/forest-tree/unused.2bpp"
+UnusedForestTreeFrames: ; unreferenced
+INCBIN "gfx/tilesets/forest-tree/1.2bpp"
+INCBIN "gfx/tilesets/forest-tree/2.2bpp"
+INCBIN "gfx/tilesets/forest-tree/3.2bpp"
+INCBIN "gfx/tilesets/forest-tree/4.2bpp"
 
 CelebiShrineEvent:
 	call DelayFrame
@@ -19,7 +22,7 @@ CelebiShrineEvent:
 	ld hl, SPRITEANIMSTRUCT_ANIM_SEQ_ID
 	add hl, bc
 	ld [hl], SPRITE_ANIM_SEQ_CELEBI
-	ld hl, SPRITEANIMSTRUCT_0F
+	ld hl, SPRITEANIMSTRUCT_VAR4
 	add hl, bc
 	ld a, $80
 	ld [hl], a
@@ -96,9 +99,8 @@ CelebiEvent_CountDown:
 	set 7, [hl]
 	ret
 
-CelebiEvent_SpawnLeaf:
-; unused
-	ld hl, wcf65
+CelebiEvent_SpawnLeaf: ; unreferenced
+	ld hl, wFrameCounter2
 	ld a, [hl]
 	inc [hl]
 	and $7
@@ -135,7 +137,7 @@ UpdateCelebiPosition:
 	ld hl, SPRITEANIMSTRUCT_YCOORD
 	add hl, bc
 	inc [hl]
-	ld hl, SPRITEANIMSTRUCT_0F
+	ld hl, SPRITEANIMSTRUCT_VAR4
 	add hl, bc
 	ld a, [hl]
 	ld d, a
@@ -145,7 +147,7 @@ UpdateCelebiPosition:
 	sub $3
 	ld [hl], a
 .skip
-	ld hl, SPRITEANIMSTRUCT_0E
+	ld hl, SPRITEANIMSTRUCT_VAR3
 	add hl, bc
 	ld a, [hl]
 	inc [hl]

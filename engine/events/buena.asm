@@ -43,10 +43,8 @@ BuenasPassword:
 
 .PasswordIndices:
 	db NUM_PASSWORDS_PER_CATEGORY
-x = 0
-rept NUM_PASSWORDS_PER_CATEGORY
+for x, NUM_PASSWORDS_PER_CATEGORY
 	db x
-x = x + 1
 endr
 	db -1
 
@@ -85,9 +83,9 @@ BuenaPrize:
 	call Buena_PrizeMenu
 	jr z, .done
 	ld [wMenuSelectionQuantity], a
-	call Buena_getprize
+	call Buena_GetPrize
 	ld a, [hl]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 	ld hl, .BuenaIsThatRightText
 	call BuenaPrintText
@@ -95,7 +93,7 @@ BuenaPrize:
 	jr c, .loop
 
 	ld a, [wMenuSelectionQuantity]
-	call Buena_getprize
+	call Buena_GetPrize
 	inc hl
 	ld a, [hld]
 	ld c, a
@@ -107,7 +105,7 @@ BuenaPrize:
 	push hl
 	ld [wCurItem], a
 	ld a, $1
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	ld hl, wNumItems
 	call ReceiveItem
 	pop hl
@@ -224,7 +222,7 @@ Buena_PrizeMenu:
 	ld hl, .MenuHeader
 	call CopyMenuHeader
 	ld a, [wMenuSelection]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	xor a
 	ld [wWhichIndexSet], a
 	ldh [hBGMapMode], a
@@ -258,35 +256,31 @@ Buena_PrizeMenu:
 	db SCROLLINGMENU_DISPLAY_ARROWS ; flags
 	db 4, 13 ; rows, columns
 	db SCROLLINGMENU_ITEMS_NORMAL ; item format
-	dba .indices
-	dba .prizeitem
-	dba .prizepoints
+	dba .Prizes
+	dba .PrintPrizeItem
+	dba .PrintPrizePoints
 
-NUM_BUENA_PRIZES EQU 9 ; ((BuenaPrizeItems.End - BuenaPrizeItems) / 2)
-
-.indices
+.Prizes:
 	db NUM_BUENA_PRIZES
-x = 1
-rept NUM_BUENA_PRIZES
-	db x
-x = x + 1
+for x, NUM_BUENA_PRIZES
+	db x + 1
 endr
 	db -1
 
-.prizeitem
+.PrintPrizeItem:
 	ld a, [wMenuSelection]
-	call Buena_getprize
+	call Buena_GetPrize
 	ld a, [hl]
 	push de
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 	pop hl
 	call PlaceString
 	ret
 
-.prizepoints
+.PrintPrizePoints:
 	ld a, [wMenuSelection]
-	call Buena_getprize
+	call Buena_GetPrize
 	inc hl
 	ld a, [hl]
 	ld c, "0"
@@ -294,7 +288,7 @@ endr
 	ld [de], a
 	ret
 
-Buena_getprize:
+Buena_GetPrize:
 	dec a
 	ld hl, BuenaPrizeItems
 	ld b, 0

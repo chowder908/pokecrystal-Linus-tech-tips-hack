@@ -5,7 +5,7 @@
 sgb_pal_set: MACRO
 	db (SGB_PAL_SET << 3) + 1
 	dw PREDEFPAL_\1, PREDEFPAL_\2, PREDEFPAL_\3, PREDEFPAL_\4
-	ds 7
+	ds 7, 0
 ENDM
 
 sgb_pal01: MACRO
@@ -28,13 +28,13 @@ PalPacket_BetaPoker:
 PalPacket_UnownPuzzle:
 	sgb_pal_set UNOWN_PUZZLE, UNOWN_PUZZLE, UNOWN_PUZZLE, UNOWN_PUZZLE
 
-PalPacket_9bd6:
+PalPacket_AllPal0:
 	sgb_pal_set ROUTES, ROUTES, ROUTES, ROUTES
 
 PalPacket_GSIntroShellderLapras:
 	sgb_pal_set GS_INTRO_SHELLDER_LAPRAS, ROUTES, ROUTES, ROUTES
 
-UnreferencedPalPacket_BetaIntroLapras:
+PalPacket_BetaIntroLapras: ; unreferenced
 	sgb_pal_set BETA_INTRO_LAPRAS, ROUTES, ROUTES, ROUTES
 
 PalPacket_GSIntroJigglypuffPikachu:
@@ -61,7 +61,7 @@ PalPacket_BattleGrayscale:
 PalPacket_Pokegear:
 	sgb_pal_set POKEGEAR, ROUTES, ROUTES, ROUTES
 
-UnreferencedPalPacket_9c86:
+PalPacket_Pack2: ; unreferenced
 	sgb_pal_set PACK, ROUTES, ROUTES, ROUTES
 
 PalPacket_SlotMachine:
@@ -79,18 +79,18 @@ PalPacket_TradeTube:
 PalPacket_GamefreakLogo:
 	sgb_pal_set GS_INTRO_GAMEFREAK_LOGO, ROUTES, ROUTES, ROUTES
 
-PalPacket_9ce6:
+PalPacket_Pal01:
 	sgb_pal01
 	RGB 31, 31, 31
 rept 6
 	RGB 00, 00, 00
 endr
-	ds 1
+	db 0
 
-PalPacket_9cf6:
+PalPacket_Pal23:
 	sgb_pal23
 	RGB 31, 31, 31
 rept 6
 	RGB 00, 00, 00
 endr
-	ds 1
+	db 0

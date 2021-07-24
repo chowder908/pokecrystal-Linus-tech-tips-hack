@@ -124,12 +124,12 @@ LoadMetatiles::
 	ld a, [wOverworldMapAnchor + 1]
 	ld d, a
 	ld hl, wSurroundingTiles
-	ld b, SURROUNDING_HEIGHT / METATILE_WIDTH ; 5
+	ld b, SCREEN_META_HEIGHT
 
 .row
 	push de
 	push hl
-	ld c, SURROUNDING_WIDTH / METATILE_WIDTH ; 6
+	ld c, SCREEN_META_WIDTH
 
 .col
 	push de
@@ -195,7 +195,7 @@ endr
 	add hl, de
 	pop de
 	ld a, [wMapWidth]
-	add 6
+	add MAP_CONNECTION_PADDING_WIDTH * 2
 	add e
 	ld e, a
 	jr nc, .ok2
@@ -368,8 +368,7 @@ CheckIndoorMap::
 	cp GATE
 	ret
 
-; unused
-UnreferencedCheckEnvironment::
+CheckUnknownMap:: ; unreferenced
 	cp INDOOR
 	ret z
 	cp GATE
@@ -1110,14 +1109,14 @@ ObjectEventText::
 	text_far _ObjectEventText
 	text_end
 
-BGEvent::
+BGEvent:: ; unreferenced
 	jumptext BGEventText
 
 BGEventText::
 	text_far _BGEventText
 	text_end
 
-CoordinatesEvent::
+CoordinatesEvent:: ; unreferenced
 	jumptext CoordinatesEventText
 
 CoordinatesEventText::
@@ -1125,31 +1124,53 @@ CoordinatesEventText::
 	text_end
 
 CheckObjectMask::
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wObjectMasks
 	add hl, de
 	ld a, [hl]
 	ret
 
 MaskObject::
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wObjectMasks
 	add hl, de
-	ld [hl], -1 ; , masked
+	ld [hl], -1 ; masked
 	ret
 
 UnmaskObject::
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wObjectMasks
 	add hl, de
 	ld [hl], 0 ; unmasked
 	ret
+
+if DEF(_DEBUG)
+ComputeROMXChecksum::
+	ldh a, [hROMBank]
+	push af
+	ld a, c
+	rst Bankswitch
+	ld hl, $4000 ; ROMX start
+.loop
+	ld a, [hli]
+	add e
+	ld e, a
+	ld a, d
+	adc 0
+	ld d, a
+	ld a, h
+	cp $80 ; HIGH(ROMX end)
+	jr c, .loop
+	pop af
+	rst Bankswitch
+	ret
+endc
 
 ScrollMapUp::
 	hlcoord 0, 0
@@ -1257,7 +1278,7 @@ BackupBGMapColumn::
 	ret
 
 UpdateBGMapRow::
-	ld hl, wBGMapBufferPtrs
+	ld hl, wBGMapBufferPointers
 	push de
 	call .iteration
 	pop de
@@ -1288,7 +1309,7 @@ UpdateBGMapRow::
 	ret
 
 UpdateBGMapColumn::
-	ld hl, wBGMapBufferPtrs
+	ld hl, wBGMapBufferPointers
 	ld c, SCREEN_HEIGHT
 .loop
 	ld a, e
@@ -1313,7 +1334,7 @@ UpdateBGMapColumn::
 	ldh [hBGMapTileCount], a
 	ret
 
-Unreferenced_Function2816::
+ClearBGMapBuffer:: ; unreferenced
 	ld hl, wBGMapBuffer
 	ld bc, wBGMapBufferEnd - wBGMapBuffer
 	xor a
@@ -1412,7 +1433,7 @@ SaveScreen::
 	ld de, wScreenSave
 	ld a, [wMapWidth]
 	add 6
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ld a, [wPlayerStepDirection]
 	and a
 	jr z, .down
@@ -1426,7 +1447,7 @@ SaveScreen::
 
 .up
 	ld de, wScreenSave + SCREEN_META_WIDTH
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -1698,7 +1719,7 @@ GetCoordTile::
 	and a
 	jr z, .nope
 	ld l, a
-	ld h, $0
+	ld h, 0
 	add hl, hl
 	add hl, hl
 	ld a, [wTilesetCollisionAddress]
@@ -1904,7 +1925,7 @@ CloseSubmenu::
 	call ReloadTilesetAndPalettes
 	call UpdateSprites
 	call Call_ExitMenu
-	call ret_d90
+	call GSReloadPalettes
 	jr FinishExitMenu
 
 ExitAllMenus::
@@ -1912,7 +1933,7 @@ ExitAllMenus::
 	call Call_ExitMenu
 	call ReloadTilesetAndPalettes
 	call UpdateSprites
-	call ret_d90
+	call GSReloadPalettes
 FinishExitMenu::
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
@@ -2048,7 +2069,7 @@ SwitchToAnyMapAttributesBank::
 	rst Bankswitch
 	ret
 
-GetMapAttributesBank::
+GetMapAttributesBank:: ; unreferenced
 	ld a, [wMapGroup]
 	ld b, a
 	ld a, [wMapNumber]
@@ -2142,7 +2163,8 @@ GetMapEnvironment::
 	pop hl
 	ret
 
-	ret ; unused
+Map_DummyFunction:: ; unreferenced
+	ret
 
 GetAnyMapEnvironment::
 	push hl
@@ -2263,12 +2285,12 @@ LoadMapTileset::
 	push bc
 
 	ld hl, Tilesets
-	ld bc, wTilesetEnd - wTileset
+	ld bc, TILESET_LENGTH
 	ld a, [wMapTileset]
 	call AddNTimes
 
 	ld de, wTilesetBank
-	ld bc, wTilesetEnd - wTileset
+	ld bc, TILESET_LENGTH
 
 	ld a, BANK(Tilesets)
 	call FarCopyBytes
@@ -2277,10 +2299,8 @@ LoadMapTileset::
 	pop hl
 	ret
 
-InexplicablyEmptyFunction::
-; unused
-; Inexplicably empty.
-; Seen in PredefPointers.
+DummyEndPredef::
+; Unused function at the end of PredefPointers.
 rept 16
 	nop
 endr

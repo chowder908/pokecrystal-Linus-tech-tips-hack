@@ -10,10 +10,8 @@ INCBIN "gfx/mobile/kris_silhouette.2bpp"
 MobileCard2GFX::
 INCBIN "gfx/mobile/card_2.2bpp"
 
-CardLargeSpriteGFX::
+CardLargeSpriteAndFolderGFX::
 INCBIN "gfx/mobile/card_large_sprite.2bpp"
-
-CardFolderGFX::
 INCBIN "gfx/mobile/card_folder.2bpp"
 
 CardSpriteGFX::
@@ -25,7 +23,7 @@ Function17a68f::
 	ld hl, $d088
 	bit 5, [hl]
 	jr z, .asm_17a6a6
-	ld de, wStringBuffer1 ; $d073
+	ld de, wStringBuffer1
 	push de
 	call Function17a721
 	pop de
@@ -39,11 +37,11 @@ Function17a68f::
 Function17a6a8:
 	push de
 	push bc
-	ld hl, wStringBuffer2 ; $d086
+	ld hl, wStringBuffer2
 	ld bc, $a
 	xor a
 	call ByteFill
-	ld hl, wBuffer1
+	ld hl, wd1ea
 	ld bc, $10
 	ld a, $ff
 	call ByteFill
@@ -68,7 +66,7 @@ Function17a6a8:
 	ret
 
 Function17a6f5:
-	ld hl, wBuffer1
+	ld hl, wd1ea
 	ld c, $0
 	ld b, $8
 .asm_17a6fc
@@ -109,7 +107,7 @@ Function17a721:
 	ld a, $ff
 	call ByteFill
 	pop de
-	ld hl, wBuffer1
+	ld hl, wd1ea
 	ld b, $8
 .asm_17a732
 	ld c, $0
@@ -188,7 +186,7 @@ Function17a78f:
 	farcall ReloadMapPart
 	ret
 
-Function17a7a6:
+Function17a7a6: ; unreferenced
 	ld a, [$d087]
 	inc a
 	ld [$d087], a
@@ -458,8 +456,8 @@ Function17a943:
 	dec a
 	ld [$d08c], a
 	ld c, a
-	ld b, $0
-	ld hl, wBuffer1
+	ld b, 0
+	ld hl, wd1ea
 	add hl, bc
 	ld [hl], $ff
 	ld a, $2
@@ -478,10 +476,10 @@ Function17a964:
 	cp $10
 	jr nc, .asm_17a979
 	ld c, a
-	ld b, $0
+	ld b, 0
 	inc a
 	ld [$d08c], a
-	ld hl, wBuffer1
+	ld hl, wd1ea
 	add hl, bc
 	ld [hl], e
 	and a
@@ -496,7 +494,7 @@ Function17a97b:
 	lb bc, 2, 18
 	call ClearBox
 	hlcoord 3, 2
-	ld de, wBuffer1
+	ld de, wd1ea
 	ld a, [$d08c]
 	and a
 	ret z
@@ -531,7 +529,7 @@ String_17a9b2:
 	db   "@"
 
 Function17a9cb:
-	ld de, wVirtualOAM ; $c400
+	ld de, wVirtualOAM
 	ld hl, $d088
 	bit 6, [hl]
 	jr nz, .bit_6_set
@@ -673,7 +671,7 @@ Function17aaa9:
 	ld a, $3
 	call Function17aae3
 	ld c, a
-	ld b, $0
+	ld b, 0
 	hlcoord 0, 0, wAttrmap
 	add hl, bc
 	push hl
@@ -721,7 +719,7 @@ Function17aae3:
 	call AddNTimes
 	pop af
 	ld c, a
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ld a, [hl]
 	ret
@@ -773,7 +771,7 @@ Function17abcf:
 	ldh [rSVBK], a
 
 	ld hl, Palette_17ac55
-	ld de, wBGPals1 ; $d000
+	ld de, wBGPals1
 	ld bc, 6 palettes
 	call CopyBytes
 

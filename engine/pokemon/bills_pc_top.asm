@@ -47,14 +47,14 @@ _BillsPC:
 	call LoadMenuHeader
 	ld a, $1
 .loop
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	call SetPalettes
 	xor a
 	ld [wWhichIndexSet], a
 	ldh [hBGMapMode], a
 	call DoNthMenu
 	jr c, .cancel
-	ld a, [wMenuCursorBuffer]
+	ld a, [wMenuCursorPosition]
 	push af
 	ld a, [wMenuSelection]
 	ld hl, .Jumptable
@@ -139,7 +139,7 @@ BillsPC_DepositMenu:
 	and a
 	ret
 
-Unreferenced_Functione512:
+BillsPC_Deposit_CheckPartySize: ; unreferenced
 	ld a, [wPartyCount]
 	and a
 	jr z, .no_mon
@@ -206,14 +206,14 @@ BillsPC_WithdrawMenu:
 	and a
 	ret
 
-Unreferenced_Functione56d:
+BillsPC_Withdraw_CheckPartySize: ; unreferenced
 	ld a, [wPartyCount]
 	cp PARTY_LENGTH
-	jr nc, .asm_e576
+	jr nc, .party_full
 	and a
 	ret
 
-.asm_e576
+.party_full
 	ld hl, PCCantTakeText
 	call MenuTextboxBackup
 	scf
@@ -256,17 +256,17 @@ CopyBoxmonToTempMon:
 	ld de, wTempMonSpecies
 	ld bc, BOXMON_STRUCT_LENGTH
 	ld a, BANK(sBoxMon1Species)
-	call GetSRAMBank
+	call OpenSRAM
 	call CopyBytes
 	call CloseSRAM
 	ret
 
-Unreferenced_LoadBoxMonListing:
+LoadBoxMonListing: ; unreferenced
 	ld a, [wCurBox]
 	cp b
 	jr z, .same_box
 	ld a, b
-	ld hl, .BoxAddrs
+	ld hl, .BoxAddresses
 	ld bc, 3
 	call AddNTimes
 	ld a, [hli]
@@ -282,7 +282,7 @@ Unreferenced_LoadBoxMonListing:
 	ld hl, sBoxCount
 
 .okay
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hl]
 	ld bc, sBoxMons - sBox
 	add hl, bc
@@ -364,7 +364,8 @@ Unreferenced_LoadBoxMonListing:
 	call CloseSRAM
 	ret
 
-.BoxAddrs:
+.BoxAddresses:
+	table_width 3, LoadBoxMonListing.BoxAddresses
 	dba sBox1
 	dba sBox2
 	dba sBox3
@@ -379,3 +380,4 @@ Unreferenced_LoadBoxMonListing:
 	dba sBox12
 	dba sBox13
 	dba sBox14
+	assert_table_length NUM_BOXES

@@ -20,7 +20,7 @@ CheckForLuckyNumberWinners:
 	dec d
 	jr nz, .PartyLoop
 	ld a, BANK(sBox)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sBoxCount]
 	and a
 	jr z, .SkipOpenBox
@@ -59,7 +59,7 @@ CheckForLuckyNumberWinners:
 	add hl, bc
 	add hl, bc
 	ld a, [hli]
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a ; hl now contains the address of the loaded box in SRAM
@@ -103,12 +103,13 @@ CheckForLuckyNumberWinners:
 	ld a, [wScriptVar]
 	and a
 	ret z ; found nothing
+
 	farcall StubbedTrainerRankings_LuckyNumberShow
 	ld a, [wTempByteValue]
 	and a
 	push af
 	ld a, [wCurPartySpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, .LuckyNumberMatchPartyText
 	pop af
@@ -124,7 +125,7 @@ CheckForLuckyNumberWinners:
 	push hl
 	ld d, h
 	ld e, l
-	ld hl, wBuffer1
+	ld hl, wMonIDDigitsBuffer
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
 	call PrintNum
 	ld hl, wLuckyNumberDigitsBuffer
@@ -134,7 +135,7 @@ CheckForLuckyNumberWinners:
 	ld b, 5
 	ld c, 0
 	ld hl, wLuckyNumberDigitsBuffer + 4
-	ld de, wBuffer1 + 4
+	ld de, wMonIDDigitsBuffer + 4
 .loop
 	ld a, [de]
 	cp [hl]
@@ -191,6 +192,7 @@ CheckForLuckyNumberWinners:
 	ret
 
 .BoxBankAddresses:
+	table_width 3, CheckForLuckyNumberWinners.BoxBankAddresses
 	dba sBox1
 	dba sBox2
 	dba sBox3
@@ -205,6 +207,7 @@ CheckForLuckyNumberWinners:
 	dba sBox12
 	dba sBox13
 	dba sBox14
+	assert_table_length NUM_BOXES
 
 .LuckyNumberMatchPartyText:
 	text_far _LuckyNumberMatchPartyText

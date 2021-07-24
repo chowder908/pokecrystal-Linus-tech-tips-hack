@@ -196,7 +196,7 @@ DisplayHourOClock:
 	pop hl
 	ret
 
-UnreferencedFunction907f1:
+DisplayHoursMinutesWithMinString: ; unreferenced
 	ld h, d
 	ld l, e
 	push hl
@@ -593,7 +593,7 @@ InitialClearDSTFlag:
 	text_far _TimeAskOkayText
 	text_end
 
-DebugDisplayTime:
+MrChrono: ; unreferenced
 	hlcoord 1, 14
 	lb bc, 3, SCREEN_WIDTH - 2
 	call ClearBox
@@ -653,7 +653,8 @@ DebugDisplayTime:
 	ret
 
 .NowOnDebug:
-	text "<PARA>Now on DEBUG…"
+	text_start
+	para "Now on DEBUG…"
 	prompt
 
 .PrintTime:
@@ -682,8 +683,8 @@ PrintHour:
 	inc hl
 	pop bc
 	call AdjustHourForAMorPM
-	ld [wDeciramBuffer], a
-	ld de, wDeciramBuffer
+	ld [wTextDecimalByte], a
+	ld de, wTextDecimalByte
 	call PrintTwoDigitNumberLeftAlign
 	ret
 

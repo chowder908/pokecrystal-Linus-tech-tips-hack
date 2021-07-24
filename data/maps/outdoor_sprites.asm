@@ -2,7 +2,8 @@
 ; Maps with environment ROUTE or TOWN can only use these sprites.
 
 OutdoorSprites:
-; entries correspond to map groups
+; entries correspond to MAPGROUP_* constants
+	table_width 2, OutdoorSprites
 	dw OlivineGroupSprites
 	dw MahoganyGroupSprites
 	dw DungeonsGroupSprites
@@ -29,6 +30,7 @@ OutdoorSprites:
 	dw NewBarkGroupSprites
 	dw SaffronGroupSprites
 	dw CherrygroveGroupSprites
+	assert_table_length NUM_MAP_GROUPS
 
 PalletGroupSprites:
 	db SPRITE_SUICUNE
@@ -294,7 +296,7 @@ IndigoGroupSprites:
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
 	db SPRITE_POKEFAN_M
-	db SPRITE_BUENA
+	db SPRITE_BEAUTY
 	db SPRITE_GRAMPS
 	db SPRITE_YOUNGSTER
 	db SPRITE_FISHER
@@ -496,7 +498,7 @@ CianwoodGroupSprites:
 	db SPRITE_OLIVINE_RIVAL
 	db SPRITE_POKEFAN_M
 	db SPRITE_LASS
-	db SPRITE_BUENA
+	db SPRITE_BEAUTY
 	db SPRITE_SWIMMER_GIRL
 	db SPRITE_SAILOR
 	db SPRITE_POKEFAN_F
@@ -521,7 +523,7 @@ OlivineGroupSprites:
 	db SPRITE_OLIVINE_RIVAL
 	db SPRITE_POKEFAN_M
 	db SPRITE_LASS
-	db SPRITE_BUENA
+	db SPRITE_BEAUTY
 	db SPRITE_SWIMMER_GIRL
 	db SPRITE_SAILOR
 	db SPRITE_POKEFAN_F

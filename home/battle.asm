@@ -15,7 +15,7 @@ GetPartyLocation::
 	ld bc, PARTYMON_STRUCT_LENGTH
 	jp AddNTimes
 
-Unreferenced_GetDexNumber::
+GetDexNumber:: ; unreferenced
 ; Probably used in gen 1 to convert index number to dex number
 ; Not required in gen 2 because index number == dex number
 	push hl
@@ -27,7 +27,7 @@ Unreferenced_GetDexNumber::
 	ld bc, BASE_DATA_SIZE
 	call AddNTimes
 	ld a, BANK(BaseData)
-	call GetFarHalfword
+	call GetFarWord
 	ld b, l
 	ld c, h
 	pop hl
@@ -275,6 +275,6 @@ PushLYOverrides::
 	ld a, HIGH(wLYOverrides)
 	ld [wRequested2bppDest + 1], a
 
-	ld a, (wLYOverridesEnd - wLYOverrides) / 16
-	ld [wRequested2bpp], a
+	ld a, (wLYOverridesEnd - wLYOverrides) / LEN_2BPP_TILE
+	ld [wRequested2bppSize], a
 	ret

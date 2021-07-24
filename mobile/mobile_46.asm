@@ -184,7 +184,7 @@ Function118180:
 	and a
 	ret z
 	ld a, BANK(s5_a89c) ; aka BANK(s5_a8b2)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wcd69
 	ld de, s5_a89c
 	ld bc, 22
@@ -331,7 +331,7 @@ Function118284:
 	call BattleTowerRoomMenu_Cleanup
 	ret
 
-Function1182d5:
+Function1182d5: ; unreferenced
 	call BattleTowerRoomMenu_InitRAM
 	ld a, $18
 	ld [wcd33], a
@@ -478,7 +478,7 @@ BattleTowerRoomMenu_InitRAM:
 	farcall Function115d99
 	farcall Function11615a
 	ld a, BANK(s5_bfff)
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld [s5_bfff], a
 	call CloseSRAM
@@ -487,7 +487,7 @@ BattleTowerRoomMenu_InitRAM:
 Function118440:
 	push af
 	ld a, BANK(s5_bfff)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [s5_bfff]
 	inc a
 	ld [s5_bfff], a
@@ -1039,7 +1039,7 @@ Function118880:
 	ld a, $2
 	jp Function119e2b
 
-Function118896:
+Function118896: ; unreferenced
 	ld a, [wc821]
 	bit 1, a
 	jr nz, .asm_1188a5
@@ -1091,7 +1091,7 @@ Function1188c8:
 Function1188e7:
 	ld de, wc346
 	ld a, BANK(s5_aa4a)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [s5_aa4a]
 	call CloseSRAM
 	and a
@@ -1302,7 +1302,7 @@ BattleTowerRoomMenu_UpdatePickLevelMenu:
 	ld [wMobileInactivityTimerFrames], a
 	ret
 
-Function118a54:
+Function118a54: ; unreferenced
 	ld a, [wcd55]
 	ld l, a
 	ld a, [wcd56]
@@ -1311,7 +1311,7 @@ Function118a54:
 	ld bc, $0004
 	jp Function118ae4
 
-Function118a65:
+Function118a65: ; unreferenced
 	ld hl, BattleDownloadURL
 	ld de, wcc60
 	ld bc, $80
@@ -1502,7 +1502,7 @@ IndexDownloadURL:
 
 popc
 
-Unreferenced_Function118d35:
+Function118d35: ; unreferenced
 	ld hl, $d200
 	ld a, [wcd38]
 	and a
@@ -1521,7 +1521,7 @@ Unreferenced_Function118d35:
 	add b
 	ld b, a
 	ld a, BANK(s5_b2fb)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, b
 	ld [s5_b2fb], a
 	call CloseSRAM
@@ -1942,7 +1942,7 @@ Function119009:
 
 Function119054:
 	ld a, $6
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wd002
 	ld a, [wcd4f]
 	ld e, a
@@ -1972,7 +1972,7 @@ Function119054:
 	ld a, $3 ; ???
 	ldh [rSVBK], a
 	ld a, BANK(s5_b1b3) ; aka BANK(s5_b1b4) and BANK(s5_aa7f) and BANK(s5_b2f3) and BANK(s5_b2f4)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [wcd4f]
 	ld [s5_b1b3], a
 	ld a, [wcd50]
@@ -2012,19 +2012,19 @@ Function1190d0:
 
 Function1190ec:
 	ld a, BANK(s5_aa73)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wBGMapBuffer
 	ld de, s5_aa73
 	ld bc, 12
 	call CopyBytes
 	call CloseSRAM
 	ld a, BANK(s5_aa72)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $1
 	ld [s5_aa72], a
 	call CloseSRAM
 	ld a, BANK(s6_a000)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [w3_d000]
 	ld c, a
 	ld a, [w3_d000 + 1]
@@ -2069,7 +2069,7 @@ Function11915d:
 	ld bc, 12
 	call CopyBytes
 	ld a, BANK(s5_aa7f)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wBGMapBuffer
 	ld de, s5_aa7f
 	ld c, 12
@@ -2201,7 +2201,7 @@ Function119223:
 	ld [wcd4b], a
 	ld [wcd4c], a
 	ld a, BANK(s5_b092) ; aka BANK(s5_b1b1) and BANK(s5_b1b2) and BANK(s5_b1d3)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wc3cd
 	ld de, s5_b092
 	ld bc, 31
@@ -2237,7 +2237,7 @@ Function119223:
 	jr z, .asm_1192c2
 	cp $fe
 	jr z, .asm_1192a5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [de]
 	inc de
 	ld c, a
@@ -2308,7 +2308,7 @@ Function119223:
 
 Function1192cc:
 	ld a, BANK(s5_aa73)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, s5_aa73
 	ld de, wc608
 	ld bc, 12
@@ -2369,7 +2369,7 @@ Function119300:
 	ld [wcd4c], a
 	ld a, [de]
 	inc de
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [de]
 	inc de
 	ld c, a
@@ -2499,7 +2499,7 @@ Function1193fb:
 
 Function119413:
 	ld a, $6 ; ???
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [w3_d000]
 	ld c, a
 	ld a, [w3_d000 + 1]
@@ -3530,7 +3530,7 @@ setcharmap ascii
 XGameCode:
 	db "CGB-BXTJ-00", $0
 
-XGameResult:
+XGameResult: ; unreferenced
 	db "pokemon_crystal", $0
 
 popc
@@ -3580,7 +3580,7 @@ Function119b52:
 	cp $1
 	jr nz, .asm_119b66
 	ld a, BANK(s5_a800)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $4
 	ld [s5_a800], a
 	call CloseSRAM
@@ -3680,7 +3680,7 @@ Function119b6b:
 	ld a, $19
 	ld [wBattleTowerRoomMenuJumptableIndex], a
 	ld a, BANK(s5_a800)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $1
 	ld [s5_a800], a
 	call CloseSRAM
@@ -3700,7 +3700,7 @@ Function119b6b:
 	cp HIGH(w3_d869)
 	jr nz, .asm_119be3
 	ld a, BANK(s5_b090) ; aka BANK(s5_b091) and BANK(s5_b023)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [wcf64]
 	ld [s5_b090], a
 	ld a, [wcf65]
@@ -3750,7 +3750,7 @@ popc
 	ld a, $19
 	ld [wBattleTowerRoomMenuJumptableIndex], a
 	ld a, BANK(s5_a800)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $1
 	ld [s5_a800], a
 	call CloseSRAM
@@ -3861,7 +3861,7 @@ MenuHeader_119cf7:
 	dw NULL
 	db 0 ; default option
 
-MenuData_119cff:
+MenuData_119cff: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 15, 7, SCREEN_WIDTH - 1, TEXTBOX_Y - 1
 	dw NULL
@@ -3890,7 +3890,7 @@ Strings_Ll0ToL40:
 	db " L:40 @@"
 	db "CANCEL@@"
 
-String_119d8c:
+BattleTowerCancelString: ; unreferenced
 	db "CANCEL@"
 
 BattleTower_LevelCheck:
@@ -3979,7 +3979,7 @@ BattleTower_UbersCheck:
 .uber_under_70
 	pop af
 	ld a, [de]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, wStringBuffer1
 	ld de, wcd49
@@ -4123,7 +4123,7 @@ Function119eb4:
 
 Function119ec2:
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld [sMobileLoginPassword + MOBILE_LOGIN_PASSWORD_LENGTH], a
 	ld de, sMobileLoginPassword + 1
@@ -4288,7 +4288,7 @@ Function119f98:
 
 Function11a00e:
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sMobileLoginPassword]
 	and a
 	jr z, .asm_11a02a
@@ -4297,7 +4297,7 @@ Function11a00e:
 	and a
 	ret nz
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld [sMobileLoginPassword], a
 
@@ -4627,7 +4627,7 @@ String_11a2cf:
 String_11a2d3:
 	db "NO@"
 
-MenuHeader_11a2d6:
+MenuHeader_11a2d6: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 14, 6, SCREEN_WIDTH - 1, 10
 	dw NULL
@@ -5151,7 +5151,7 @@ String_11a7d7:
 String_11a7f4:
 	db   "　　　　　　　　　　　　　　　@"
 
-MenuHeader_11a804:
+MenuHeader_11a804: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, SCREEN_WIDTH - 1, 5
 	dw NULL
@@ -5240,24 +5240,18 @@ Function11a88c:
 	ret
 
 Unknown_11a89a:
-x = 0
-rept 16
+for x, 16
 	bcd x % 100, x / 100
-x = x + 1
 endr
 
 Unknown_11a8ba:
-x = 0
-rept 16
+for x, 0, 16**2, 16
 	bcd x % 100, x / 100
-x = x + 16
 endr
 
 Unknown_11a8da:
-x = 0
-rept 16
+for x, 0, 16**3, 16**2
 	bcd x % 100, x / 100
-x = x + 256
 endr
 
 BattleTowerRoomMenu_WriteMessage:
@@ -5392,7 +5386,7 @@ Function11a9ce:
 	call Call_ExitMenu
 	farcall Stubbed_Function106462
 	farcall Function106464
-	call ret_d90
+	call GSReloadPalettes
 	farcall FinishExitMenu
 	call UpdateSprites
 	ret
@@ -5402,7 +5396,7 @@ Function11a9f0:
 	and a
 	ret
 
-Function11a9f4:
+Function11a9f4: ; unreferenced
 	ld a, [wcd8a]
 	ld l, a
 	ld a, [wcd8b]
@@ -5443,12 +5437,12 @@ Text_QuitReadingNews:
 	text "Quit reading NEWS?"
 	done
 
-Text_CanceledSendingSaveFile:
+Text_CanceledSendingSaveFile: ; unreferenced
 	text "Canceled sending"
 	line "SAVE FILE."
 	done
 
-Text_ReceivedOddEgg:
+Text_ReceivedOddEgg: ; unreferenced
 	text "ODD EGG"
 	line "was received!"
 	done
@@ -5458,7 +5452,7 @@ Text_RegisteringRecord:
 	line "record…"
 	done
 
-Text_BattleRoomVisitLimit:
+Text_BattleRoomVisitLimit: ; unreferenced
 	text "One visit per day"
 	line "per BATTLE ROOM!"
 	done
@@ -5487,7 +5481,7 @@ Text_ExitGymLeaderHonorRoll:
 	line "HONOR ROLL?"
 	done
 
-Text_LinkingWithCenter:
+Text_LinkingWithCenter: ; unreferenced
 	text "Linking with the"
 	line "CENTER…"
 	done
@@ -5502,16 +5496,16 @@ Text_CheckBattleRoomListByMaxLevel:
 	line "list by max level?"
 	done
 
-Text_EnterWhichBattleRoom:
+Text_EnterWhichBattleRoom: ; unreferenced
 	text "Enter which"
 	line "BATTLE ROOM?"
 	done
 
-Text_WhichBattleRoom:
+Text_WhichBattleRoom: ; unreferenced
 	text "Which BATTLE ROOM?"
 	done
 
-Text_ThisBattleRoomPleaseWait:
+Text_ThisBattleRoomPleaseWait: ; unreferenced
 	text_ram wStringBuffer3
 	text "'s ROOM"
 	line "@"
@@ -5580,7 +5574,7 @@ Function11acb7:
 	ld hl, TilemapPack_11ba44
 	ld a, [wcd49]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	sla c
 	rl b
 	sla c
@@ -5606,7 +5600,7 @@ Function11acb7:
 	ld hl, TilemapPack_11bb7d
 	ld a, [wcd4a]
 	ld c, a
-	ld b, $0
+	ld b, 0
 	sla c
 	rl b
 	sla c
@@ -5636,7 +5630,7 @@ Function11ad1b:
 	ld a, [wMenuCursorY]
 	ld [wcd82], a
 	dec a
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	ld a, $10
 	ld [wCurIconTile], a
 	ld hl, LoadMenuMonIcon
@@ -6134,7 +6128,7 @@ Function11b099:
 	call Function11b236
 	ld a, [wc7d0]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wPokedexOrder
 	add hl, de
 	ld e, l
@@ -6379,28 +6373,28 @@ Function11b175:
 	scf
 	ret
 
-Function11b1f7:
+FillScreenWithTile32: ; unreferenced
 	hlcoord 0, 0
 	ld a, $32
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	call ByteFill
 	ret
 
-Function11b203:
-.asm_11b203
+CopyDataUntilFF: ; unreferenced
+.loop
 	ld a, [de]
 	cp $ff
 	ret z
 	inc de
 	ld [hli], a
-	jr .asm_11b203
+	jr .loop
 
 Function11b20b:
 	ld a, [wc7d1]
 	ld hl, wc7d0
 	add [hl]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, $c6d0
 	add hl, de
 	ld a, [hl]
@@ -6554,10 +6548,10 @@ Function11b295:
 	call PlaceString
 	ret
 
-String_11b2fe:
+String_11b2fe: ; unreferenced
 	db "あげる#@"
 
-String_11b303:
+String_11b303: ; unreferenced
 	db "ほしい#@"
 
 String_11b308:
@@ -6695,7 +6689,7 @@ Function11b397:
 	inc de
 	jr .loop
 
-Unreferenced_Function11b3b6:
+Function11b3b6: ; unreferenced
 .loop
 	ld a, [hl]
 	cp -1
@@ -6900,7 +6894,7 @@ Function11b483:
 	ld [hl], a
 	pop bc
 	ld de, NAME_LENGTH
-	ld hl, wPartyMonOT
+	ld hl, wPartyMonOTs
 	pop af
 	push af
 .loop4
@@ -6955,7 +6949,7 @@ Function11b483:
 
 .okay4
 	ld a, BANK(sPartyMail)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, MAIL_STRUCT_LENGTH
 .loop9
 	push af
@@ -7033,7 +7027,7 @@ Function11b570:
 	ld a, $1
 	ldh [rSVBK], a
 	ld a, BANK(s5_a800)
-	call GetSRAMBank
+	call OpenSRAM
 
 	ld de, s5_a800
 	ld a, $1
@@ -7079,14 +7073,14 @@ Function11b5e7:
 
 Function11b5e8:
 	ld a, $0
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, wRTC
 	ld de, $c608
 	ld bc, 4
 	call CopyBytes
 	call CloseSRAM
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $c608
 	ld de, $b08c
 	ld bc, 4
@@ -7174,36 +7168,36 @@ Function11b6b3:
 
 Function11b6b4:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [wcd30]
 	ld [$c708], a
 	ld a, [wcd31]
 	ld [$c709], a
 
 	ld a, LOW($c708) ; Species
-	ld [wMobileMonSpeciesPointerBuffer], a
+	ld [wMobileMonSpeciesPointer], a
 	ld a, HIGH($c708)
-	ld [wMobileMonSpeciesPointerBuffer + 1], a
+	ld [wMobileMonSpeciesPointer + 1], a
 
 	ld a, LOW($c60d) ; Partymon Struct
-	ld [wMobileMonStructurePointerBuffer], a
+	ld [wMobileMonStructPointer], a
 	ld a, HIGH($c60d)
-	ld [wMobileMonStructurePointerBuffer + 1], a
+	ld [wMobileMonStructPointer + 1], a
 
 	ld a, LOW($c63d) ; OT
-	ld [wMobileMonOTNamePointerBuffer], a
+	ld [wMobileMonOTPointer], a
 	ld a, HIGH($c63d)
-	ld [wMobileMonOTNamePointerBuffer + 1], a
+	ld [wMobileMonOTPointer + 1], a
 
 	ld a, LOW($c642) ; Nickname
-	ld [wMobileMonNicknamePointerBuffer], a
+	ld [wMobileMonNicknamePointer], a
 	ld a, HIGH($c642)
-	ld [wMobileMonNicknamePointerBuffer + 1], a
+	ld [wMobileMonNicknamePointer + 1], a
 
 	ld a, LOW($c647) ; Mail
-	ld [wMobileMonMailPointerBuffer], a
+	ld [wMobileMonMailPointer], a
 	ld a, HIGH($c647)
-	ld [wMobileMonMailPointerBuffer + 1], a
+	ld [wMobileMonMailPointer + 1], a
 
 	ld a, $46
 	ld [$c628], a
@@ -7347,7 +7341,7 @@ Function11b7e5:
 	ld [wLinkMode], a
 	farcall SaveAfterLinkTrade
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, $5
 	ld [$a800], a
 	call CloseSRAM
@@ -7373,7 +7367,7 @@ Function11b879:
 	and a
 	ret z
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [$a800]
 	ld [wScriptVar], a
 	ld a, [$a890]
@@ -7462,7 +7456,7 @@ Function11b879:
 Function11b920:
 	call Mobile46_InitJumptable
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, $a81f
 	ld de, $c626
 	ld bc, 8
@@ -7473,7 +7467,7 @@ Function11b920:
 
 Function11b93b:
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	xor a
 	ld [$a800], a
 	ld hl, $a823
@@ -7483,29 +7477,29 @@ Function11b93b:
 	call CloseSRAM
 
 	ld a, LOW($c608)
-	ld [wMobileMonSpeciesPointerBuffer], a
+	ld [wMobileMonSpeciesPointer], a
 	ld a, HIGH($c608)
-	ld [wMobileMonSpeciesPointerBuffer + 1], a
+	ld [wMobileMonSpeciesPointer + 1], a
 
 	ld a, LOW($c611)
-	ld [wMobileMonStructurePointerBuffer], a
+	ld [wMobileMonStructPointer], a
 	ld a, HIGH($c611)
-	ld [wMobileMonStructurePointerBuffer + 1], a
+	ld [wMobileMonStructPointer + 1], a
 
 	ld a, LOW($c641)
-	ld [wMobileMonOTNamePointerBuffer], a
+	ld [wMobileMonOTPointer], a
 	ld a, HIGH($c641)
-	ld [wMobileMonOTNamePointerBuffer + 1], a
+	ld [wMobileMonOTPointer + 1], a
 
 	ld a, LOW($c646)
-	ld [wMobileMonNicknamePointerBuffer], a
+	ld [wMobileMonNicknamePointer], a
 	ld a, HIGH($c646)
-	ld [wMobileMonNicknamePointerBuffer + 1], a
+	ld [wMobileMonNicknamePointer + 1], a
 
 	ld a, LOW($c64b)
-	ld [wMobileMonMailPointerBuffer], a
+	ld [wMobileMonMailPointer], a
 	ld a, HIGH($c64b)
-	ld [wMobileMonMailPointerBuffer + 1], a
+	ld [wMobileMonMailPointer + 1], a
 	call AddMobileMonToParty
 	farcall SaveAfterLinkTrade
 	ret
@@ -7516,9 +7510,9 @@ AddMobileMonToParty:
 	ld e, a
 	inc [hl]
 
-	ld a, [wMobileMonSpeciesPointerBuffer]
+	ld a, [wMobileMonSpeciesPointer]
 	ld l, a
-	ld a, [wMobileMonSpeciesPointerBuffer + 1]
+	ld a, [wMobileMonSpeciesPointer + 1]
 	ld h, a
 	inc hl
 	ld bc, wPartySpecies
@@ -7538,7 +7532,7 @@ AddMobileMonToParty:
 	ld hl, wPartyMon1Species
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld a, e
-	ld [wMobileMonSpeciesBuffer], a
+	ld [wMobileMonSpecies], a
 .loop2
 	add hl, bc
 	dec a
@@ -7546,16 +7540,16 @@ AddMobileMonToParty:
 	jr nz, .loop2
 	ld e, l
 	ld d, h
-	ld a, [wMobileMonStructurePointerBuffer]
+	ld a, [wMobileMonStructPointer]
 	ld l, a
-	ld a, [wMobileMonStructurePointerBuffer + 1]
+	ld a, [wMobileMonStructPointer + 1]
 	ld h, a
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call CopyBytes
 
-	ld hl, wPartyMonOT
+	ld hl, wPartyMonOTs
 	ld bc, NAME_LENGTH
-	ld a, [wMobileMonSpeciesBuffer]
+	ld a, [wMobileMonSpecies]
 .loop3
 	add hl, bc
 	dec a
@@ -7563,9 +7557,9 @@ AddMobileMonToParty:
 	jr nz, .loop3
 	ld e, l
 	ld d, h
-	ld a, [wMobileMonOTNamePointerBuffer]
+	ld a, [wMobileMonOTPointer]
 	ld l, a
-	ld a, [wMobileMonOTNamePointerBuffer + 1]
+	ld a, [wMobileMonOTPointer + 1]
 	ld h, a
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
@@ -7574,7 +7568,7 @@ AddMobileMonToParty:
 
 	ld hl, wPartyMonNicknames
 	ld bc, MON_NAME_LENGTH
-	ld a, [wMobileMonSpeciesBuffer]
+	ld a, [wMobileMonSpecies]
 .loop4
 	add hl, bc
 	dec a
@@ -7582,9 +7576,9 @@ AddMobileMonToParty:
 	jr nz, .loop4
 	ld e, l
 	ld d, h
-	ld a, [wMobileMonNicknamePointerBuffer]
+	ld a, [wMobileMonNicknamePointer]
 	ld l, a
-	ld a, [wMobileMonNicknamePointerBuffer + 1]
+	ld a, [wMobileMonNicknamePointer + 1]
 	ld h, a
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
@@ -7593,19 +7587,19 @@ AddMobileMonToParty:
 
 	ld hl, sPartyMail
 	ld bc, MAIL_STRUCT_LENGTH
-	ld a, [wMobileMonSpeciesBuffer]
+	ld a, [wMobileMonSpecies]
 .loop5
 	add hl, bc
 	dec a
 	and a
 	jr nz, .loop5
 	ld a, BANK(sPartyMail)
-	call GetSRAMBank
+	call OpenSRAM
 	ld e, l
 	ld d, h
-	ld a, [wMobileMonMailPointerBuffer]
+	ld a, [wMobileMonMailPointer]
 	ld l, a
-	ld a, [wMobileMonMailPointerBuffer + 1]
+	ld a, [wMobileMonMailPointer + 1]
 	ld h, a
 	ld bc, MAIL_STRUCT_LENGTH
 	call CopyBytes

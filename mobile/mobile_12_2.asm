@@ -9,7 +9,7 @@ MobileCheckOwnMonAnywhere:
 	ld d, a
 	ld e, 0
 	ld hl, wPartyMon1Species
-	ld bc, wPartyMonOT
+	ld bc, wPartyMonOTs
 .asm_4a851
 	call .CheckMatch
 	ret c
@@ -21,13 +21,13 @@ MobileCheckOwnMonAnywhere:
 	dec d
 	jr nz, .asm_4a851
 	ld a, BANK(sBoxCount)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sBoxCount]
 	and a
 	jr z, .asm_4a888
 	ld d, a
 	ld hl, sBoxMon1Species
-	ld bc, sBoxMonOT
+	ld bc, sBoxMonOTs
 .asm_4a873
 	call .CheckMatch
 	jr nc, .asm_4a87c
@@ -51,13 +51,13 @@ MobileCheckOwnMonAnywhere:
 	and $f
 	cp c
 	jr z, .asm_4a8d1
-	ld hl, .BoxAddrs
+	ld hl, .BoxAddresses
 	ld b, 0
 	add hl, bc
 	add hl, bc
 	add hl, bc
 	ld a, [hli]
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -72,7 +72,7 @@ MobileCheckOwnMonAnywhere:
 	ld e, l
 	pop hl
 	push de
-	ld de, sBoxMonOT - sBoxCount
+	ld de, sBoxMonOTs - sBoxCount
 	add hl, de
 	ld b, h
 	ld c, l
@@ -130,7 +130,8 @@ MobileCheckOwnMonAnywhere:
 	scf
 	ret
 
-.BoxAddrs:
+.BoxAddresses:
+	table_width 3, MobileCheckOwnMonAnywhere.BoxAddresses
 	dba sBox1
 	dba sBox2
 	dba sBox3
@@ -145,6 +146,7 @@ MobileCheckOwnMonAnywhere:
 	dba sBox12
 	dba sBox13
 	dba sBox14
+	assert_table_length NUM_BOXES
 
 .AdvanceOTName:
 	push hl
@@ -235,12 +237,12 @@ Function4a94e:
 .asm_4a9b0
 	ld de, SFX_WRONG
 	call PlaySFX
-	ld hl, MobilePickThreeMonForBattle
+	ld hl, MobilePickThreeMonForBattleText
 	call PrintText
 	jr .asm_4a974
 
-MobilePickThreeMonForBattle:
-	text_far _MobilePickThreeMonForBattle
+MobilePickThreeMonForBattleText:
+	text_far _MobilePickThreeMonForBattleText
 	text_end
 
 Function4a9c3:
@@ -264,7 +266,7 @@ Function4a9c3:
 Function4a9d7:
 	ld a, [wd002]
 	ld hl, wPartyMonNicknames
-	call GetNick
+	call GetNickname
 	ld h, d
 	ld l, e
 	ld de, wMobileParticipant1Nickname
@@ -272,7 +274,7 @@ Function4a9d7:
 	call CopyBytes
 	ld a, [wd003]
 	ld hl, wPartyMonNicknames
-	call GetNick
+	call GetNickname
 	ld h, d
 	ld l, e
 	ld de, wMobileParticipant2Nickname
@@ -280,7 +282,7 @@ Function4a9d7:
 	call CopyBytes
 	ld a, [wd004]
 	ld hl, wPartyMonNicknames
-	call GetNick
+	call GetNickname
 	ld h, d
 	ld l, e
 	ld de, wMobileParticipant3Nickname
@@ -332,7 +334,7 @@ Function4aa34:
 	pop af
 	ret
 
-Function4aa6e:
+Function4aa6e: ; unreferenced
 	pop af
 	ld de, SFX_WRONG
 	call PlaySFX
@@ -422,15 +424,15 @@ Function4aad3:
 
 	ld c, a
 	xor a
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 .loop
 	push bc
 	push hl
 	ld e, MONICON_PARTYMENU
 	farcall LoadMenuMonIcon
-	ldh a, [hObjectStructIndexBuffer]
+	ldh a, [hObjectStructIndex]
 	inc a
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	pop hl
 	pop bc
 	dec c
@@ -495,7 +497,7 @@ Function4ab1a:
 	dec a
 	ld [wCurPartyMon], a
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, wPartySpecies
 	add hl, bc
 	ld a, [hl]
@@ -719,7 +721,7 @@ Function4acaa:
 	ld a, $b
 	ld [wMenuBorderLeftCoord], a
 	ld a, $1
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	call InitVerticalMenuCursor
 	ld hl, w2DMenuFlags1
 	set 6, [hl]
@@ -803,7 +805,7 @@ Function4ad60:
 	farcall ManagePokemonMoves
 	ret
 
-Function4ad67:
+Function4ad67: ; unreferenced
 	ret
 
 Function4ad68:

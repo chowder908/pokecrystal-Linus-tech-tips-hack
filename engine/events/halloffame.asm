@@ -278,7 +278,7 @@ HOF_SlideBackpic:
 	ldh a, [hSCX]
 	cp $70
 	ret z
-	add $4
+	add 4
 	ldh [hSCX], a
 	call DelayFrame
 	jr .backpicloop
@@ -412,7 +412,7 @@ LoadHOFTeam:
 	ld bc, wHallOfFameTempEnd - wHallOfFameTemp + 1
 	call AddNTimes
 	ld a, BANK(sHallOfFame)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hl]
 	and a
 	jr z, .absent
@@ -462,7 +462,7 @@ DisplayHOFMon:
 	call Textbox
 	ld a, [wTempMonSpecies]
 	ld [wCurPartySpecies], a
-	ld [wDeciramBuffer], a
+	ld [wTextDecimalByte], a
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	xor a
@@ -477,7 +477,7 @@ DisplayHOFMon:
 	ld [hli], a
 	ld [hl], "<DOT>"
 	hlcoord 3, 13
-	ld de, wDeciramBuffer
+	ld de, wTextDecimalByte
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	call GetBasePokemonName
