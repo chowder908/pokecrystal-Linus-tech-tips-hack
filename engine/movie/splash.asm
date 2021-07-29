@@ -166,7 +166,7 @@ GameFreakPresents_PlaceGameFreak:
 GameFreakPresents_PlacePresents:
 	ld hl, wIntroSceneTimer
 	ld a, [hl]
-	cp 64
+	cp 0
 	jr nc, .place_presents
 	inc [hl]
 	ret
