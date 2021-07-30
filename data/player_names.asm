@@ -3,17 +3,17 @@ ChrisNameMenuHeader:
 	menu_coords 0, 0, 10, TEXTBOX_Y - 1
 	dw .MaleNames
 	db 1 ; default option
-	db 0 ; ????
+	db 0 ; LINUS
 
 .MaleNames:
 	db STATICMENU_CURSOR | STATICMENU_PLACE_TITLE | STATICMENU_DISABLE_B ; flags
 	db 5 ; items
 	db "NEW NAME@"
 MalePlayerNameArray:
-	db "CHRIS@"
-	db "MAT@"
-	db "ALLAN@"
-	db "JON@"
+	db "LINUS@"
+	db "LIMBUS@"
+	db "LINUS@"
+	db "LIMBO@"
 	db 2 ; title indent
 	db " NAME @" ; title
 
